@@ -34,6 +34,12 @@ Once all the packages have been installed you can start the development server b
 ```
 npm start
 ```
+### Docker
+
+git clone https://github.com/crowdwiz-biz/cwd-front.git
+cd cwd-front
+docker run -it --rm --name cwd-front -v "$PWD":/usr/src/app -w /usr/src/app -p 8090:8090 node:11 npm install
+docker run -it --rm --name cwd-front -v "$PWD":/usr/src/app -w /usr/src/app -p 8090:8090 node:11 npm start
 
 Once the compilation is done the GUI will be available in your browser at: `localhost:8090` or `127.0.0.1:8090`. Hot Reloading is enabled so the browser will live update as you edit the source files.
 
@@ -45,11 +51,3 @@ If you'd like to host your own wallet somewhere, you should create a production 
 npm run build
 ```
 This will create a bundle in the ./build/dist folder that can be hosted with the web server of your choice.
-
-
-### Docker
-
-Clone this repository, run `docker-compose up` and visit localhost:8080
-
-
-
