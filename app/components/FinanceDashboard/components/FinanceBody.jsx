@@ -127,23 +127,6 @@ class FinanceBody extends React.Component {
                             />
                             <Translate content="finance_dashboard.cwd_exchange_btn" />
                         </button>
-
-                        <button
-                            type="button"
-                            className="finance-dashboard__btn finance-dashboard__btn--btc"
-                            onClick={this.followFinanceLink.bind(
-                                this,
-                                "/gateway/btc"
-                            )}
-                            disabled={false}
-                        >
-                            <NewIcon
-                                iconWidth={width > 576 ? 34 : 27}
-                                iconHeight={width > 576 ? 50 : 36}
-                                iconName={"finance-dashboard_btn_icon_btc"}
-                            />
-                            <Translate content="finance_dashboard.btc_exchange_btn" />
-                        </button>
                     </div>
                 </li>
 

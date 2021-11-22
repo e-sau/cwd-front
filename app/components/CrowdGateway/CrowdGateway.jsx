@@ -6,11 +6,9 @@ import AccountStore from "stores/AccountStore";
 import { ChainStore } from "bitsharesjs";
 import { Apis } from "bitsharesjs-ws";
 import AccountInfo from "./components/AccountInfo";
-import RateInfo from "./components/RateInfo";
 import ActiveAdsList from "./components/ActiveAdsList";
 import MyTrades from "./components/MyTrades";
 import CreateTradeAd from "./components/CreateTradeAd";
-import { Link } from "react-router-dom";
 
 //STYLES
 import "./scss/cwdgateway.scss";
@@ -162,12 +160,6 @@ class CrowdGateway extends React.Component {
 
         return (
             <section className="cwd-common__wrap" key={accountId}>
-                <Link to="/finance-dashboard" className="cwdgateway__back-link">
-                    <Translate
-                        content="cwdgateway.back_btn"
-                        className="cwd-btn__rounded"
-                    />
-                </Link>
                 <Translate
                     className="cwd-common__title"
                     content="cwdgateway.title"
@@ -183,7 +175,6 @@ class CrowdGateway extends React.Component {
                     userBanTime={this.state.data["user_ban_time"]}
                 />
 
-                {isExchange ? <RateInfo /> : null}
 
                 <Tabs
                     className="cwd-tabs"

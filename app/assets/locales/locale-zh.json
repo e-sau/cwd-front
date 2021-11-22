@@ -376,7 +376,8 @@
         "whitelist": {
             "add": "加入白名单",
             "add_black": "加入黑名单",
-            "black": "黑名单",
+            "black_tab": "黑名单",
+            "white_tab": "白名单",
             "black_by": "已加入黑名单",
             "blacklist_title": "帐户黑名单",
             "empty": "%(account)s 尚未将任何帐户列入白名单。",
@@ -630,7 +631,6 @@
         "submit_btn": "发送",
         "time_limit": "付款时间：",
         "title": "购买/出售CWD",
-        "back_btn": "选择网关",
         "gateways": {
             "deposit__title": "充值",
             "deposit_text": "要充值您的CROWD.BTC钱包，请将所需的比特币金额转移到下面的地址（将在两次确认后完成转移）",

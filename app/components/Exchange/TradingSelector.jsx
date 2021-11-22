@@ -38,7 +38,7 @@ class TradingSelector extends React.Component {
             .exec("get_asset_count", [])
             .then(data => {
                 let objectsArray = [];
-                let blackList = [2, 4, 6, 7, 8, 9, 11, 12, 14, 15, 16, 18, 19, 20, 22, 24, 25, 26, 27, 28, 29, 30, 33, 34, 39, 40, 41, 42, 43, 44];
+                let blackList = [2, 3, 4, 6, 7, 8, 9, 11, 12, 14, 15, 16, 18, 19, 20, 22, 24, 25, 26, 27, 28, 29, 30, 33, 34, 39, 40, 41, 42, 43, 44,];
                 for (var i = 0; i < parseInt(data); i++) {
                     if (!blackList.includes(i)) {
                         let element = "1.3." + i.toString();

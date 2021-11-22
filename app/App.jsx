@@ -166,15 +166,6 @@ const CrowdGateway = Loadable({
     loading: LoadingIndicator
 });
 
-/*CrowdGateway BTC*/
-const GatewayBTC = Loadable({
-    loader: () =>
-        import(
-            /* webpackChunkName: "GatewayBTC" */ "./components/CrowdGateway/Gateways/GatewayBTC"
-        ),
-    loading: LoadingIndicator
-});
-
 /*Investment*/
 const Investment = Loadable({
     loader: () =>
@@ -485,7 +476,7 @@ class App extends React.Component {
         let { walletMode, theme, location, match, ...others } = this.props;
         let content = null;
 
-        let depricatedAssets = ["ALTER", "SILVER", "CARBON", "INDEX.CWD", "MULTICS"];
+        let depricatedAssets = ["ALTER", "SILVER", "CARBON", "INDEX.CWD", "MULTICS", "CROWD.BTC"];
         let tradeUrl = window.location.href;
 
         let isDepricated = false;
@@ -696,11 +687,6 @@ class App extends React.Component {
                                                 exact
                                                 path="/gateway/dex"
                                                 component={CrowdGateway}
-                                            />
-                                            <Route
-                                                exact
-                                                path="/gateway/btc"
-                                                component={GatewayBTC}
                                             />
                                             <Route
                                                 exact

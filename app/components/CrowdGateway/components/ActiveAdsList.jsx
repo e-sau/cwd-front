@@ -5,9 +5,6 @@ import TradeItemSell from "./TradeItemSell";
 import { Apis } from "bitsharesjs-ws";
 import Translate from "react-translate-component";
 import TradeSorterFilter from "./Utility/TradeSorterFilter";
-import { ChainStore } from "bitsharesjs";
-import AccountStore from "stores/AccountStore";
-import { connect } from "alt-react";
 
 
 //STYLES
@@ -26,8 +23,7 @@ class ActiveAdsList extends React.Component {
             intervalID: 0,
             isSorted: false,
             findAccount: "",
-            searchstring: "",
-            rateData: {}
+            searchstring: ""
         };
 
         this.sortByExRate = this.sortByExRate.bind(this);
@@ -48,10 +44,10 @@ class ActiveAdsList extends React.Component {
     }
 
     componentDidMount() {
-        this.getRateData();
+        this.getAds();
 
         this.setState({
-            intervalID: setInterval(this.getRateData.bind(this), 5000)
+            intervalID: setInterval(this.getAds.bind(this), 5000)
         });
     }
 
@@ -63,27 +59,7 @@ class ActiveAdsList extends React.Component {
         return self.indexOf(value) === index;
     }
 
-    getRateData() {
-        let host = window.location.hostname;
-        if (["127.0.0", "192.168"].includes(host.substring(0, 7))) {
-            host = "backup.cwd.global"
-        }
-
-        let url = "https://" + host + "/static/gateway-stats.json";
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    rateData: data
-                });
-
-                this.getAds();
-            });
-    }
-
     getAds() {
-        let ratesFilter = this.state.rateData;
         let currentAccount = this.props.currentAccount;
         let gateways = [];
 
@@ -101,37 +77,29 @@ class ActiveAdsList extends React.Component {
                     .db_api()
                     .exec("get_objects", [unique])
                     .then(accounts => {
+                        let allowedAccounts = [];
+                        let allowedTradesBuy = [];
 
-                        if (this.props.dexListAccounts) {
-                            let dexListAccounts = this.props.dexListAccounts;
-                            let dexBlacklisted = dexListAccounts.get("blacklisted_accounts");
-                            let allowedAccounts = [];
-                            let allowedTradesBuy = [];
-
-                            // check if infinity && if in DEX blacklist
-                            for (let account in accounts) {
-                                if (accounts[account]['referral_status_type'] == 4 && dexBlacklisted.indexOf(accounts[account]['id']) == -1) {
-                                    allowedAccounts.push(accounts[account]['id'])
-                                }
+                        // check if infinity && if in DEX blacklist
+                        for (let account in accounts) {
+                            if (accounts[account]['referral_status_type'] == 4) {
+                                allowedAccounts.push(accounts[account]['id'])
                             }
-
-                            for (let trade in tradesBuy) {
-                                if (allowedAccounts.includes(tradesBuy[trade]['pa']["p2p_gateway"])) {
-                                    for (let rate in ratesFilter) {
-                                        if (new RegExp(ratesFilter[rate]['filter'].join("|")).test(tradesBuy[trade]['pa']['currency'].toUpperCase()) || rate == tradesBuy[trade]['pa']['currency'].toUpperCase()) {
-                                            let price = parseFloat(tradesBuy[trade]['pa']["price"] / 100000000).toFixed(8)
-                                            if (price <= ratesFilter[rate]['max'] && price >= ratesFilter[rate]['min']) {
-                                                allowedTradesBuy.push(tradesBuy[trade])
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            this.setState({
-                                buyAds: allowedTradesBuy
-                            });
                         }
+
+                        for (let trade in tradesBuy) {
+                            if (allowedAccounts.includes(tradesBuy[trade]['pa']["p2p_gateway"])
+                                // check if price max > min && max > 2
+                                && tradesBuy[trade]['pa']['max_cwd'] >= tradesBuy[trade]['pa']['min_cwd']
+                                && tradesBuy[trade]['pa']['min_cwd'] > 200000
+                            ) {
+                                allowedTradesBuy.push(tradesBuy[trade])
+                            }
+                        }
+
+                        this.setState({
+                            buyAds: allowedTradesBuy
+                        });
                     });
             });
         Apis.instance()
@@ -156,17 +124,13 @@ class ActiveAdsList extends React.Component {
                         }
                         let allowedTradesSell = []
                         for (let trade in tradesSell) {
-                            if (allowedAccounts.includes(tradesSell[trade]['pa']["p2p_gateway"])) {
-                                if (allowedAccounts.includes(tradesSell[trade]['pa']["p2p_gateway"])) {
-                                    for (let rate in ratesFilter) {
-                                        if (new RegExp(ratesFilter[rate]['filter'].join("|")).test(tradesSell[trade]['pa']['currency'].toUpperCase()) || rate == tradesSell[trade]['pa']['currency'].toUpperCase()) {
-                                            let price = parseFloat(tradesSell[trade]['pa']["price"] / 100000000).toFixed(8)
-                                            if (price <= ratesFilter[rate]['max'] && price >= ratesFilter[rate]['min']) {
-                                                allowedTradesSell.push(tradesSell[trade])
-                                            }
-                                        }
-                                    }
-                                }
+                            console.log("TCL: ActiveAdsList -> getAds -> trade", tradesSell[trade])
+                            if (allowedAccounts.includes(tradesSell[trade]['pa']["p2p_gateway"])
+                                // check if price max > min && max > 2
+                                && tradesSell[trade]['pa']['max_cwd'] >= tradesSell[trade]['pa']['min_cwd']
+                                && tradesSell[trade]['pa']['min_cwd'] > 200000
+                            ) {
+                                allowedTradesSell.push(tradesSell[trade])
                             }
                         }
                         this.setState({
@@ -206,7 +170,7 @@ class ActiveAdsList extends React.Component {
     }
 
     render() {
-        let {searchstring, isSorted, currentAccount} = this.state;
+        let { searchstring, isSorted, currentAccount } = this.state;
 
         let buyAds_non_filter = this.state.buyAds;
         let buyAds = [];
@@ -468,13 +432,4 @@ class ActiveAdsList extends React.Component {
     }
 }
 
-export default ActiveAdsList = connect(ActiveAdsList, {
-    listenTo() {
-        return [AccountStore];
-    },
-    getProps() {
-        return {
-            dexListAccounts: ChainStore.fetchFullAccount("cwdex-list")
-        };
-    }
-});
+export default ActiveAdsList;

@@ -3,9 +3,10 @@ import Translate from "react-translate-component";
 import TradeBaseItem from "./utility/TradeBaseItem";
 
 // IMAGES
-import btcIcon from "assets/svg-images/svg-common/main-page/trade-img/btc_icon.svg";
 import mgcwdIcon from "assets/svg-images/svg-common/main-page/trade-img/mgcwd_icon.svg";
 import gcwdIcon from "assets/svg-images/svg-common/main-page/trade-img/gcwd_icon.svg";
+import mcentIcon from "assets/svg-images/svg-common/main-page/trade-img/mcent_icon.svg";
+
 
 class TradeBaseStats extends React.Component {
     constructor(props) {
@@ -27,9 +28,9 @@ class TradeBaseStats extends React.Component {
                 },
                 {
                     base: "1.3.0",
-                    quote: "1.3.3",
-                    icon: btcIcon,
-                    link: "CROWD.BTC_CWD"
+                    quote: "1.3.32",
+                    icon: mcentIcon,
+                    link: "MCENT_CWD"
                 }
             ]
         };

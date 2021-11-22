@@ -47,4 +47,9 @@ npm run build
 This will create a bundle in the ./build/dist folder that can be hosted with the web server of your choice.
 
 
+### Docker
+
+Clone this repository, run `docker-compose up` and visit localhost:8080
+
+
 

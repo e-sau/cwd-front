@@ -376,7 +376,8 @@
         "whitelist": {
             "add": "Thêm vào whitelist",
             "add_black": "Thêm vào backlist",
-            "black": "Backlist",
+            "black_tab": "Danh sách đen",
+            "white_tab": "Danh sách trắng",
             "black_by": "Đã thêm vào backlist",
             "blacklist_title": "Danh sách backlist tài khoản",
             "empty": "%(account)s chưa thêm bất cứ tài khoản nào vào whitelist.",
@@ -630,7 +631,6 @@
         "submit_btn": "Gửi",
         "time_limit": "Thời gian thanh toán:",
         "title": "Mua/Bán CWD",
-        "back_btn": "đến mục chọn gateway",
         "gateways": {
             "deposit__title": "Nạp tiền",
             "deposit_text": "Để nạp tiền vào ví CROWD.BTC của bạn, hãy chuyển số tiền mong muốn bằng đồng bitcoin đến địa chỉ ghi bên dưới (việc chuyển tiền sẽ được thực hiện sau 2 lần xác nhận)",

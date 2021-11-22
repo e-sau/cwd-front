@@ -376,7 +376,8 @@
         "whitelist": {
             "add": "Zur Weissen Liste hinzufügen",
             "add_black": "Zur Schwarzen Liste hinzufügen",
-            "black": "Schwarze Liste",
+            "black_tab": "Schwarze Liste",
+            "white_tab": "Weiße Liste",
             "black_by": "Zur Schwarzen Liste hinzugefügt",
             "blacklist_title": "Schwarze Liste von Konten",
             "empty": "%(account)s hat bisher noch keine Konten zur Weißen Liste hinzugefügt.",
@@ -629,7 +630,6 @@
         "submit_btn": "Senden",
         "time_limit": "Zeit für die Zahlung:",
         "title": "CWD kaufen / verkaufen",
-        "back_btn": "zur Auswahl des Gateways",
         "gateways": {
             "deposit__title": "Auffüllung",
             "deposit_text": "Um Ihr CROWD.BTC-Wallet aufzufüllen, überweisen Sie den gewünschten Betrag in Bitcoins an die untenstehende Adresse (die Überweisung erfolgt nach 2 Bestätigungen)",

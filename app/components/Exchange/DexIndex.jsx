@@ -51,13 +51,6 @@ class DexIndex extends React.Component {
                 },
                 {
                     base: "1.3.0",
-                    quote: "1.3.3",
-                    name: "CROWD.BTC - CWD",
-                    icon: "dex_btc_cwd",
-                    link: "CROWD.BTC_CWD"
-                },
-                {
-                    base: "1.3.0",
                     quote: "1.3.10",
                     name: "DIAMOND - CWD",
                     icon: "dex_diamond_cwd",

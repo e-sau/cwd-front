@@ -376,7 +376,8 @@
         "whitelist": {
             "add": "Add to whitelist",
             "add_black": "Add to blacklist",
-            "black": "Blacklist",
+            "black_tab": "Blacklist",
+            "white_tab": "Whitelist",
             "black_by": "Blacklisted by",
             "blacklist_title": "Account blacklist",
             "empty": "%(account)s has not whitelisted any accounts.",
@@ -642,7 +643,6 @@
         "submit_btn": "Submit",
         "time_limit": "Time to pay:",
         "title": "Buy / Sell CWD",
-        "back_btn": "back to gateway selection",
         "gateways": {
             "deposit__title": "Deposit",
             "deposit_text": "To top up your CROWD.BTC wallet transfer the required amount in bitcoins to the address below (the transfer will be made after 2 confirmations)",

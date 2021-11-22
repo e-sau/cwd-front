@@ -376,7 +376,8 @@
         "whitelist": {
             "add": "Beyaz listeye ekle",
             "add_black": "Kara listeye ekle",
-            "black": "Kara liste",
+            "black_tab": "Kara liste",
+            "white_tab": "Beyaz liste",
             "black_by": "Kara listeye eklendi",
             "blacklist_title": "Hesap kara listesi",
             "empty": "%(account)s hesabı, henüz hiçbir hesabı beyaz listeye eklenmemiş.",
@@ -630,7 +631,6 @@
         "submit_btn": "Gönder",
         "time_limit": "Ödeme zamanı:",
         "title": "CWD Al / Sat",
-        "back_btn": "Ağ geçidi seçimine git",
         "gateways": {
             "deposit__title": "bakiye yükle",
             "deposit_text": "CROWD.BTC cüzdanınıza bakiye yükleyebilmeniz için aşağıda gösterilen adrese dilediğiniz tutarı transfer edin (transfer 2 onay aşamasının ardından gerçekleşir)",
