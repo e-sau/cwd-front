@@ -192,6 +192,7 @@ class CrowdGateway extends React.Component {
                             <CreateTradeAd
                                 tradeItem={this.state.tradeItem}
                                 currentAccount={accountId}
+                                history={this.props.history}
                             />
                         </Tab>
                     ) : null}
@@ -201,6 +202,7 @@ class CrowdGateway extends React.Component {
                             buyAds={this.state.buyAds}
                             sellAds={this.state.sellAds}
                             currentAccount={accountId}
+                            history={this.props.history}
                         />
                     </Tab>
                     <Tab

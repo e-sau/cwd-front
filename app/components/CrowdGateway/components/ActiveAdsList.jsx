@@ -5,6 +5,10 @@ import TradeItemSell from "./TradeItemSell";
 import { Apis } from "bitsharesjs-ws";
 import Translate from "react-translate-component";
 import TradeSorterFilter from "./Utility/TradeSorterFilter";
+import { ChainStore } from "bitsharesjs";
+import AccountStore from "stores/AccountStore";
+import { connect } from "alt-react";
+import LinkToAccountById from "../../Utility/LinkToAccountById";
 
 
 //STYLES
@@ -14,6 +18,9 @@ import "../scss/cwdgateway-popup.scss";
 class ActiveAdsList extends React.Component {
     constructor(props) {
         super(props);
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var urlFilter = url.searchParams.get("filter");
 
         this.state = {
             buyAds: [],
@@ -23,13 +30,16 @@ class ActiveAdsList extends React.Component {
             intervalID: 0,
             isSorted: false,
             findAccount: "",
-            searchstring: ""
+            searchstring: "",
+            urlFilter: urlFilter,
+            filterAccount: urlFilter
         };
 
         this.sortByExRate = this.sortByExRate.bind(this);
         this.sortByRating = this.sortByRating.bind(this);
         this.filterBySearchValue = this.filterBySearchValue.bind(this);
         this.showAllTrades = this.showAllTrades.bind(this);
+
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -62,82 +72,89 @@ class ActiveAdsList extends React.Component {
     getAds() {
         let currentAccount = this.props.currentAccount;
         let gateways = [];
+        let scamAccounts = this.props.scamAccounts;
 
-        Apis.instance()
-            .db_api()
-            .exec("get_p2p_adv", [currentAccount, 1])
-            .then(tradesBuy => {
-                // filter traders by inifinity status
-                for (let trade in tradesBuy) {
-                    gateways.push(tradesBuy[trade]['pa']["p2p_gateway"]);
-                }
-                let unique = gateways.filter(this.onlyUnique);
+        if (scamAccounts) {
+            let blacklistedAds = scamAccounts.get("blacklisted_accounts");
 
-                Apis.instance()
-                    .db_api()
-                    .exec("get_objects", [unique])
-                    .then(accounts => {
-                        let allowedAccounts = [];
-                        let allowedTradesBuy = [];
+            Apis.instance()
+                .db_api()
+                .exec("get_p2p_adv", [currentAccount, 1])
+                .then(tradesBuy => {
+                    // filter traders by inifinity status
+                    for (let trade in tradesBuy) {
+                        gateways.push(tradesBuy[trade]['pa']["p2p_gateway"]);
+                    }
+                    let unique = gateways.filter(this.onlyUnique);
 
-                        // check if infinity && if in DEX blacklist
-                        for (let account in accounts) {
-                            if (accounts[account]['referral_status_type'] == 4) {
-                                allowedAccounts.push(accounts[account]['id'])
+                    Apis.instance()
+                        .db_api()
+                        .exec("get_objects", [unique])
+                        .then(accounts => {
+
+                            let allowedAccounts = [];
+                            let allowedTradesBuy = [];
+
+                            // check if infinity && if in DEX blacklist
+                            for (let account in accounts) {
+                                if (accounts[account]['referral_status_type'] == 4 && blacklistedAds.indexOf(accounts[account]['id']) == -1) {
+                                    allowedAccounts.push(accounts[account]['id'])
+                                }
                             }
-                        }
 
-                        for (let trade in tradesBuy) {
-                            if (allowedAccounts.includes(tradesBuy[trade]['pa']["p2p_gateway"])
-                                // check if price max > min && max > 2
-                                && tradesBuy[trade]['pa']['max_cwd'] >= tradesBuy[trade]['pa']['min_cwd']
-                                && tradesBuy[trade]['pa']['min_cwd'] > 200000
-                            ) {
-                                allowedTradesBuy.push(tradesBuy[trade])
+                            for (let trade in tradesBuy) {
+                                if (allowedAccounts.includes(tradesBuy[trade]['pa']["p2p_gateway"])
+                                    // check if price max > min && max > 2
+                                    && tradesBuy[trade]['pa']['max_cwd'] > 200000
+                                ) {
+                                    allowedTradesBuy.push(tradesBuy[trade])
+                                }
                             }
-                        }
 
-                        this.setState({
-                            buyAds: allowedTradesBuy
+                            this.setState({
+                                buyAds: allowedTradesBuy
+                            });
                         });
-                    });
-            });
-        Apis.instance()
-            .db_api()
-            .exec("get_p2p_adv", [currentAccount, 0])
-            .then(tradesSell => {
-                // filter traders by inifinity status
-                for (let trade in tradesSell) {
-                    gateways.push(tradesSell[trade]['pa']["p2p_gateway"]);
-                }
-                let unique = gateways.filter(this.onlyUnique);
+                });
 
-                Apis.instance()
-                    .db_api()
-                    .exec("get_objects", [unique])
-                    .then(accounts => {
-                        let allowedAccounts = []
-                        for (let account in accounts) {
-                            if (accounts[account]['referral_status_type'] == 4) {
-                                allowedAccounts.push(accounts[account]['id'])
+            Apis.instance()
+                .db_api()
+                .exec("get_p2p_adv", [currentAccount, 0])
+                .then(tradesSell => {
+                    // filter traders by inifinity status
+                    for (let trade in tradesSell) {
+                        gateways.push(tradesSell[trade]['pa']["p2p_gateway"]);
+                    }
+                    let unique = gateways.filter(this.onlyUnique);
+
+                    Apis.instance()
+                        .db_api()
+                        .exec("get_objects", [unique])
+                        .then(accounts => {
+                            let allowedAccounts = [];
+                            let allowedTradesSell = []
+
+                            // check if infinity && if in DEX blacklist
+                            for (let account in accounts) {
+                                if (accounts[account]['referral_status_type'] == 4 && blacklistedAds.indexOf(accounts[account]['id']) == -1) {
+                                    allowedAccounts.push(accounts[account]['id'])
+                                }
                             }
-                        }
-                        let allowedTradesSell = []
-                        for (let trade in tradesSell) {
-                            console.log("TCL: ActiveAdsList -> getAds -> trade", tradesSell[trade])
-                            if (allowedAccounts.includes(tradesSell[trade]['pa']["p2p_gateway"])
-                                // check if price max > min && max > 2
-                                && tradesSell[trade]['pa']['max_cwd'] >= tradesSell[trade]['pa']['min_cwd']
-                                && tradesSell[trade]['pa']['min_cwd'] > 200000
-                            ) {
-                                allowedTradesSell.push(tradesSell[trade])
+                            for (let trade in tradesSell) {
+                                if (allowedAccounts.includes(tradesSell[trade]['pa']["p2p_gateway"])
+                                    // check if price max > min && max > 2
+                                    && tradesSell[trade]['pa']['min_cwd'] > 200000
+                                ) {
+                                    allowedTradesSell.push(tradesSell[trade])
+                                }
                             }
-                        }
-                        this.setState({
-                            sellAds: allowedTradesSell
+
+                            this.setState({
+                                sellAds: allowedTradesSell
+                            });
                         });
-                    });
-            });
+                });
+        }
     }
 
     sortByExRate() {
@@ -169,14 +186,27 @@ class ActiveAdsList extends React.Component {
         });
     }
 
+    removeAdsFilter() {
+        if (this.state.urlFilter == null) {
+            this.setState({
+                urlFilter: this.state.filterAccount
+            });
+        }
+        else {
+            this.setState({
+                urlFilter: null
+            });
+        }
+    }
+
     render() {
-        let { searchstring, isSorted, currentAccount } = this.state;
+        let { searchstring, isSorted, currentAccount, urlFilter } = this.state;
 
         let buyAds_non_filter = this.state.buyAds;
         let buyAds = [];
         buyAds_non_filter.map(activeItem => {
-            if (searchstring != "") {
-                if (
+            if (searchstring != "" || urlFilter != null) {
+                if ((searchstring != "" && (
                     activeItem["pa"]["adv_description"]
                         .toLowerCase()
                         .search(searchstring) != -1 ||
@@ -185,11 +215,13 @@ class ActiveAdsList extends React.Component {
                         .search(searchstring) != -1 ||
                     activeItem["pa"]["currency"]
                         .toLowerCase()
-                        .search(searchstring) != -1
-                ) {
+                        .search(searchstring) != -1))
+                    ||
+                    (urlFilter != null && activeItem["pa"]["p2p_gateway"] == urlFilter)) {
                     buyAds.push(activeItem);
                 }
-            } else {
+            }
+            else {
                 buyAds.push(activeItem);
             }
         });
@@ -210,8 +242,8 @@ class ActiveAdsList extends React.Component {
         let sellAds_non_filter = this.state.sellAds;
         let sellAds = [];
         sellAds_non_filter.map(activeItem => {
-            if (searchstring != "") {
-                if (
+            if (searchstring != "" || urlFilter != null) {
+                if ((searchstring != "" && (
                     activeItem["pa"]["adv_description"]
                         .toLowerCase()
                         .search(searchstring) != -1 ||
@@ -220,8 +252,9 @@ class ActiveAdsList extends React.Component {
                         .search(searchstring) != -1 ||
                     activeItem["pa"]["currency"]
                         .toLowerCase()
-                        .search(searchstring) != -1
-                ) {
+                        .search(searchstring) != -1))
+                    ||
+                    (urlFilter != null && activeItem["pa"]["p2p_gateway"] == urlFilter)) {
                     sellAds.push(activeItem);
                 }
             } else {
@@ -244,6 +277,9 @@ class ActiveAdsList extends React.Component {
             }
         });
 
+        let filterAccount = this.state.filterAccount;
+
+
         return (
             <div>
                 <Tabs
@@ -261,6 +297,33 @@ class ActiveAdsList extends React.Component {
                             filterBySearchValue={this.filterBySearchValue}
                             showAllTrades={this.showAllTrades}
                         />
+
+                        {filterAccount != null ? urlFilter != null ?
+                            <div className="cwdgateway-active__filter-btn-wrap">
+                                <button
+                                    type="button"
+                                    className="cwd-btn__action-btn"
+                                    onClick={this.removeAdsFilter.bind(this)}
+                                >
+                                    <Translate content="cwdgateway.ads.remove_filter_btn" />
+                                </button>
+                            </div>
+                            :
+                            <div className="cwdgateway-active__filter-btn-wrap">
+                                <button
+                                    type="button"
+                                    className="cwd-btn__action-btn"
+                                    onClick={this.removeAdsFilter.bind(this)}
+                                >
+                                    <Translate content="cwdgateway.ads.filter_from" />
+                                    &nbsp;
+                                    <LinkToAccountById
+                                        noLink={true}
+                                        account={filterAccount}
+                                    />
+                                </button>
+                            </div>
+                            : null}
 
                         {buyAds.length > 0 ? (
                             <ul className="cwdgateway-active__list">
@@ -292,6 +355,7 @@ class ActiveAdsList extends React.Component {
                                                             ? true
                                                             : false
                                                     }
+                                                    history={this.props.history}
                                                 />
                                             ) : null
                                         )
@@ -333,6 +397,7 @@ class ActiveAdsList extends React.Component {
                                                             ? true
                                                             : false
                                                     }
+                                                    history={this.props.history}
                                                 />
                                             ) : null
                                         )}
@@ -354,6 +419,33 @@ class ActiveAdsList extends React.Component {
                             showAllTrades={this.showAllTrades}
                         />
 
+                        {filterAccount != null ? urlFilter != null ?
+                            <div className="cwdgateway-active__filter-btn-wrap">
+                                <button
+                                    type="button"
+                                    className="cwd-btn__action-btn"
+                                    onClick={this.removeAdsFilter.bind(this)}
+                                >
+                                    <Translate content="cwdgateway.ads.remove_filter_btn" />
+                                </button>
+                            </div>
+                            :
+                            <div className="cwdgateway-active__filter-btn-wrap">
+                                <button
+                                    type="button"
+                                    className="cwd-btn__action-btn"
+                                    onClick={this.removeAdsFilter.bind(this)}
+                                >
+                                    <Translate content="cwdgateway.ads.filter_from" />
+                                    &nbsp;
+                                    <LinkToAccountById
+                                        noLink={true}
+                                        account={filterAccount}
+                                    />
+                                </button>
+                            </div>
+                            : null}
+                            
                         {sellAds.length > 0 ? (
                             <ul className="cwdgateway-active__list">
                                 {isSorted
@@ -380,6 +472,7 @@ class ActiveAdsList extends React.Component {
                                                         ? true
                                                         : false
                                                 }
+                                                history={this.props.history}
                                             />
                                         ))
                                     : sellAds
@@ -416,6 +509,7 @@ class ActiveAdsList extends React.Component {
                                                         ? true
                                                         : false
                                                 }
+                                                history={this.props.history}
                                             />
                                         ))}
                             </ul>
@@ -432,4 +526,13 @@ class ActiveAdsList extends React.Component {
     }
 }
 
-export default ActiveAdsList;
+export default ActiveAdsList = connect(ActiveAdsList, {
+    listenTo() {
+        return [AccountStore];
+    },
+    getProps() {
+        return {
+            scamAccounts: ChainStore.fetchFullAccount("scam-accounts")
+        };
+    }
+});

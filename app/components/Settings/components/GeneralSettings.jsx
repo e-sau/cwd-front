@@ -114,7 +114,15 @@ class GeneralSettings extends React.Component {
             }
         }
 
-        let accoiuntID = this.props.account.get("id");
+        let accoiuntID;
+        
+        if(this.props.account) {
+            accoiuntID = this.props.account.get("id");
+        }
+        else {
+            accoiuntID = null;
+        }
+        
 
         return (
             <div className="app-settings__inner">

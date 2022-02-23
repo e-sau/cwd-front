@@ -1,5 +1,15 @@
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .cwd-btn {
     &__rounded {
+        @extend .noselect;
         width: auto !important;
         padding: 8px 19px 11px 19px;
         border-radius: 32px !important;
@@ -68,6 +78,8 @@
     }
 
     &__action-btn {
+        @extend .noselect;
+
         display: flex;
         align-items: center;
         justify-content: center;
@@ -93,7 +105,7 @@
             background-color: #dec27f;
             transition: all 0.3s;
 
-            & span:first-child {
+            & span {
                 color: #262626;
             }
 
@@ -159,6 +171,8 @@
     }
 
     &__asset-btn {
+        @extend .noselect;
+
         display: flex;
         align-items: center;
         justify-content: center;
@@ -210,6 +224,8 @@
     }
 
     &__square-btn {
+        @extend .noselect;
+
         display: flex;
         align-items: center;
         justify-content: center;
@@ -251,6 +267,8 @@
     }
 
     &__show-more-btn {
+        @extend .noselect;
+        
         display: flex;
         align-items: center;
         border: none;

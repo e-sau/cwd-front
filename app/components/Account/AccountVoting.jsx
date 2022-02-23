@@ -817,6 +817,10 @@ class AccountVoting extends React.Component {
             </div>
         );
 
+        let url_string = window.location.href;
+        let url = new URL(url_string);
+        let activeTab = parseInt(url.searchParams.get("activeTab"));
+
         return (
             <div id="votingWrapper" ref="appTables">
                 <Translate
@@ -829,7 +833,7 @@ class AccountVoting extends React.Component {
                     contentClass="cwd-tabs__content"
                     segmented={false}
                     actionButtons={false}
-                    defaultActiveTab={0}
+                    defaultActiveTab={activeTab ? activeTab : 0}
                 >
                     <Tab title="explorer.witnesses.title">
                         <div className={cnames("content-block")}>

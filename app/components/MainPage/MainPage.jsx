@@ -12,7 +12,7 @@ import GamezoneStats from "./components/GamezoneStats";
 import TradeBaseStats from "./components/TradeBaseStats";
 import PocStakingBlock from "./components/PocStakingBlock";
 import CodeExamples from "./components/CodeExamples";
-import CrowdProjects from "./components/CrowdProjects";
+// import CrowdProjects from "./components/CrowdProjects";
 import MainFooter from "./components/MainFooter";
 
 //STYLES
@@ -112,7 +112,7 @@ class MainPage extends React.Component {
                     <CodeExamples />
 
                     {/* Build on Crowdwiz blockchain */}
-                    <CrowdProjects />
+                    {/* <CrowdProjects /> */}
 
                     {/* FOOTER BLOCK */}
                     <MainFooter />

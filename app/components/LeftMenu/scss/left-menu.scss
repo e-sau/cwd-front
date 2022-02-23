@@ -195,3 +195,29 @@
         }
     }
 }
+
+@media (max-width: 768px) {
+    .leftmenu {
+        padding-top: 0;
+        
+        &__ul {
+            display: grid;
+            grid-template-columns: repeat(2, 50%);
+            gap: 3px;
+            padding: 0;
+            color: #ffffff;
+        }
+
+        &__li {
+            padding: 19px 16px;
+            display: flex;
+            flex-wrap: wrap;
+            cursor: pointer;
+            background-color: #212121;
+
+            svg * {
+                stroke: #dec27f;
+            }
+        }
+    }
+}

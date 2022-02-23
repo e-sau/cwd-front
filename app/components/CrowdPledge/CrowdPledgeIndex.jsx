@@ -53,6 +53,7 @@ class CrowdPledgeIndex extends React.Component {
                             buyAds={this.state.buyAds}
                             sellAds={this.state.sellAds}
                             currentAccount={accountId}
+                            history={this.props.history}
                         />
                     </Tab>
 

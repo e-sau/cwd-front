@@ -20,16 +20,9 @@ import { ChainTypes } from "bitsharesjs";
 let { operations } = ChainTypes;
 import ReactTooltip from "react-tooltip";
 import moment from "moment";
-import {
-    Link,
-    DirectLink,
-    Element,
-    Events,
-    animateScroll as scroll,
-    scrollSpy,
-    scroller
-} from "react-scroll";
 import { Tooltip } from "crowdwiz-ui-modal";
+
+import "./scss/transaction.scss"
 
 require("./scss/operation.scss");
 require("./json-inspector.scss");
@@ -51,25 +44,19 @@ class OpType extends React.Component {
 
     render() {
         let trxTypes = counterpart.translate("transaction.trxTypes");
-        let labelClass = classNames("txtlabel", this.props.color || "info");
+        let labelClass = classNames("transaction__title txtlabel", this.props.color || "info");
 
         return (
-            <tr>
-                <td>
-                    <span className={labelClass}>
-                        {this.props.txIndex >= 0 ? (
-                            <span>
-                                #{this.props.txIndex + 1}
-                                :&nbsp;
-                            </span>
-                        ) : (
-                            ""
-                        )}
-                        {trxTypes[ops[this.props.type]]}
+            <h4 className={labelClass}>
+                {this.props.txIndex >= 0 ?
+                    <span>
+                        #{this.props.txIndex + 1}
+                        :&nbsp;
                     </span>
-                </td>
-                <td />
-            </tr>
+                    : null
+                }
+                {trxTypes[ops[this.props.type]]}
+            </h4>
         );
     }
 }
@@ -84,35 +71,29 @@ class OperationTable extends React.Component {
     render() {
         let fee_row =
             this.props.fee.amount > 0 ? (
-                <tr>
-                    <td>
+                <div className="transaction__row">
+                    <div className="transaction__legend">
                         <Translate component="span" content="transfer.fee" />
-                    </td>
-                    <td>
+                    </div>
+                    <div>
                         <FormattedAsset
                             color="fee"
                             amount={this.props.fee.amount}
                             asset={this.props.fee.asset_id}
                         />
-                    </td>
-                </tr>
+                    </div>
+                </div>
             ) : null;
 
         return (
-            <div>
-                {/*  <h6><Translate component="span" content="explorer.block.op" /> #{this.props.index + 1}/{this.props.opCount}</h6> */}
-                <table style={{ marginBottom: "1em" }} className="table op-table">
-                    <caption />
-                    <tbody>
-                        <OpType
-                            txIndex={this.props.txIndex}
-                            type={this.props.type}
-                            color={this.props.color}
-                        />
-                        {this.props.children}
-                        {fee_row}
-                    </tbody>
-                </table>
+            <div className="transaction__inner">
+                <OpType
+                    txIndex={this.props.txIndex}
+                    type={this.props.type}
+                    color={this.props.color}
+                />
+                {this.props.children}
+                {fee_row}
             </div>
         );
     }
@@ -178,14 +159,14 @@ class Transaction extends React.Component {
                         );
 
                         memo = text ? (
-                            <td
+                            <div
                                 className="memo"
                                 style={{ wordBreak: "break-all" }}
                             >
                                 {text}
-                            </td>
+                            </div>
                         ) : !text && isMine ? (
-                            <td>
+                            <div>
                                 <Translate content="transfer.memo_unlock" />
                                 &nbsp;
                                 <a onClick={this._toggleLock.bind(this)}>
@@ -195,58 +176,58 @@ class Transaction extends React.Component {
                                         iconName={"locked"}
                                     />
                                 </a>
-                            </td>
+                            </div>
                         ) : null;
                     }
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.from"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].from)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].from)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.to"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].to)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].to)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount.amount}
                                     asset={op[1].amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     {
                         memo
                             ? rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate content="transfer.memo" />
-                                    </td>
+                                    </div>
                                     {memo}
-                                </tr>
+                                </div>
                             )
                             : null;
                     }
@@ -258,14 +239,14 @@ class Transaction extends React.Component {
                 case "limit_order_create":
                     color = "warning";
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="exchange.price"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedPrice
                                     base_asset={op[1].amount_to_sell.asset_id}
                                     quote_asset={op[1].min_to_receive.asset_id}
@@ -273,30 +254,30 @@ class Transaction extends React.Component {
                                     quote_amount={op[1].min_to_receive.amount}
                                     noPopOver
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="exchange.sell"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount_to_sell.amount}
                                     asset={op[1].amount_to_sell.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Tooltip
                                     placement="left"
                                     title={counterpart.translate(
@@ -308,49 +289,49 @@ class Transaction extends React.Component {
                                         content="exchange.buy_min"
                                     />
                                 </Tooltip>
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].min_to_receive.amount}
                                     asset={op[1].min_to_receive.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     // rows.push(
-                    //     <tr key="2">
-                    //         <td><Translate component="span" content="transaction.min_receive" /></td>
-                    //         <td>{!missingAssets[1] ? <FormattedAsset amount={op[1].min_to_receive.amount} asset={op[1].min_to_receive.asset_id} /> : null}</td>
-                    //     </tr>
+                    //     <div key="2">
+                    //         <div><Translate component="span" content="transaction.min_receive" /></div>
+                    //         <div>{!missingAssets[1] ? <FormattedAsset amount={op[1].min_to_receive.amount} asset={op[1].min_to_receive.asset_id} /> : null}</div>
+                    //     </div>
                     // );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.seller"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].seller)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].seller)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.expiration"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedDate
                                     value={moment.utc(op[1].expiration)}
                                     format="full"
                                     timeZoneName="short"
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -360,28 +341,28 @@ class Transaction extends React.Component {
                 case "limit_order_cancel":
                     color = "cancel";
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.order_id"
                                 />
-                            </td>
-                            <td>{op[1].order}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].order}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.fee_payer"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].fee_paying_account)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -391,28 +372,28 @@ class Transaction extends React.Component {
                 case "short_order_cancel":
                     color = "cancel";
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.order_id"
                                 />
-                            </td>
-                            <td>{op[1].order}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].order}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.fee_payer"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].fee_paying_account)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -421,65 +402,65 @@ class Transaction extends React.Component {
 
                 case "call_order_update":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.funding_account"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].funding_account)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].funding_account)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.delta_collateral"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].delta_collateral.amount}
                                     asset={op[1].delta_collateral.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.delta_debt"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].delta_debt.amount}
                                     asset={op[1].delta_debt.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     if (
                         !!op[1].extensions &&
                         !!op[1].extensions.target_collateral_ratio
                     ) {
                         rows.push(
-                            <tr key={key++}>
-                                <td>
+                            <div key={key++} className="transaction__row">
+                                <div>
                                     <Translate
                                         component="span"
                                         content="transaction.collateral_target"
                                     />
-                                </td>
-                                <td>
+                                </div>
+                                <div>
                                     {op[1].extensions.target_collateral_ratio /
                                         1000}
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         );
                     }
 
@@ -489,28 +470,28 @@ class Transaction extends React.Component {
 
                 case "key_create":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.fee_payer"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].fee_paying_account)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.key"
                                 />
-                            </td>
-                            <td>{op[1].key_data[1]}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].key_data[1]}</div>
+                        </div>
                     );
 
                     break;
@@ -519,37 +500,37 @@ class Transaction extends React.Component {
 
                 case "account_create":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="account.name"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].name)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].name)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="account.member.registrar"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].registrar)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].registrar)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="account.member.lifetime_referrer"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].referrer)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].referrer)}</div>
+                        </div>
                     );
 
                     break;
@@ -558,119 +539,119 @@ class Transaction extends React.Component {
 
                 case "account_update":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="account.name"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].account)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].account)}</div>
+                        </div>
                     );
                     if (op[1].new_options) {
                         if (op[1].new_options.voting_account) {
                             rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate
                                             component="span"
                                             content="account.votes.proxy"
                                         />
-                                    </td>
-                                    <td>
+                                    </div>
+                                    <div>
                                         {this.linkToAccount(
                                             op[1].new_options.voting_account
                                         )}
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             );
                         } else {
                             rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate
                                             component="span"
                                             content="account.votes.proxy"
                                         />
-                                    </td>
-                                    <td>
+                                    </div>
+                                    <div>
                                         <Translate
                                             component="span"
                                             content="account.votes.no_proxy"
                                         />
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             );
                             rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate
                                             component="span"
                                             content="account.options.num_committee"
                                         />
-                                    </td>
-                                    <td>{op[1].new_options.num_committee}</td>
-                                </tr>
+                                    </div>
+                                    <div>{op[1].new_options.num_committee}</div>
+                                </div>
                             );
                             rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate
                                             component="span"
                                             content="account.options.num_witnesses"
                                         />
-                                    </td>
-                                    <td>{op[1].new_options.num_witness}</td>
-                                </tr>
+                                    </div>
+                                    <div>{op[1].new_options.num_witness}</div>
+                                </div>
                             );
                             rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate
                                             component="span"
                                             content="account.options.votes"
                                         />
-                                    </td>
-                                    <td>
+                                    </div>
+                                    <div>
                                         {JSON.stringify(
                                             op[1].new_options.votes
                                         )}
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             );
                         }
 
                         rows.push(
-                            <tr key={key++}>
-                                <td>
+                            <div key={key++} className="transaction__row">
+                                <div>
                                     <Translate
                                         component="span"
                                         content="account.options.memo_key"
                                     />
-                                </td>
-                                <td>
+                                </div>
+                                <div>
                                     {op[1].new_options.memo_key.substring(
                                         0,
                                         10
                                     ) + "..."}
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         );
                     }
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.common_options"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <Inspector data={op[1]} search={false} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -689,43 +670,43 @@ class Transaction extends React.Component {
                     }
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.authorizing_account"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].authorizing_account)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.listed_account"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].account_to_list)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].account_to_list)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.new_listing"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <Translate
                                     content={`transaction.whitelist_states.${listing}`}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -734,30 +715,30 @@ class Transaction extends React.Component {
 
                 case "account_upgrade":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.account_upgrade"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].account_to_upgrade)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.lifetime"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {op[1].upgrade_to_lifetime_member.toString()}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -766,15 +747,15 @@ class Transaction extends React.Component {
                 case "account_transfer":
                     /* This case is uncomplete, needs filling out with proper fields */
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.from"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].account_id)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].account_id)}</div>
+                        </div>
                     );
 
                     break;
@@ -785,106 +766,106 @@ class Transaction extends React.Component {
                     color = "warning";
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.assets.issuer"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].issuer)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].issuer)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.assets.symbol"
                                 />
-                            </td>
-                            <td>{this.linkToAsset(op[1].symbol)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAsset(op[1].symbol)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.assets.precision"
                                 />
-                            </td>
-                            <td>{op[1].precision}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].precision}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="account.user_issued_assets.max_supply"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {utils.format_asset(
                                     op[1].common_options.max_supply,
                                     op[1]
                                 )}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="account.user_issued_assets.description"
                                 />
-                            </td>
-                            <td>{op[1].common_options.description}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].common_options.description}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.market_fee"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {op[1].common_options.market_fee_percent / 100}%
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.max_market_fee"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {utils.format_asset(
                                     op[1].common_options.max_market_fee,
                                     op[1]
                                 )}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.common_options"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <Inspector data={op[1]} search={false} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -896,50 +877,50 @@ class Transaction extends React.Component {
                     color = "warning";
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.asset_update"
                                 />
-                            </td>
-                            <td>{this.linkToAsset(op[1].asset_to_update)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAsset(op[1].asset_to_update)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.assets.issuer"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].issuer)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].issuer)}</div>
+                        </div>
                     );
                     if (op[1].new_issuer !== op[1].issuer) {
                         rows.push(
-                            <tr key={key++}>
-                                <td>
+                            <div key={key++} className="transaction__row">
+                                <div>
                                     <Translate
                                         component="span"
                                         content="account.user_issued_assets.new_issuer"
                                     />
-                                </td>
-                                <td>{this.linkToAccount(op[1].new_issuer)}</td>
-                            </tr>
+                                </div>
+                                <div>{this.linkToAccount(op[1].new_issuer)}</div>
+                            </div>
                         );
                     }
                     if (op[1].new_options.core_exchange_rate) {
                         rows.push(
-                            <tr key={key++}>
-                                <td>
+                            <div key={key++} className="transaction__row">
+                                <div>
                                     <Translate
                                         component="span"
                                         content="markets.core_rate"
                                     />
-                                </td>
-                                <td>
+                                </div>
+                                <div>
                                     <FormattedPrice
                                         base_asset={
                                             op[1].new_options.core_exchange_rate
@@ -959,26 +940,26 @@ class Transaction extends React.Component {
                                         }
                                         noPopOver
                                     />
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         );
                     }
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.new_options"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <Inspector
                                     data={op[1].new_options}
                                     search={false}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -999,26 +980,26 @@ class Transaction extends React.Component {
                     });
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.asset_update"
                                 />
-                            </td>
-                            <td>{this.linkToAsset(op[1].asset_to_update)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAsset(op[1].asset_to_update)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.new_producers"
                                 />
-                            </td>
-                            <td>{producers}</td>
-                        </tr>
+                            </div>
+                            <div>{producers}</div>
+                        </div>
                     );
 
                     break;
@@ -1034,9 +1015,9 @@ class Transaction extends React.Component {
                         );
 
                         memo = text ? (
-                            <td>{text}</td>
+                            <div>{text}</div>
                         ) : !text && isMine ? (
-                            <td>
+                            <div>
                                 <Translate content="transfer.memo_unlock" />
                                 &nbsp;
                                 <a onClick={this._toggleLock.bind(this)}>
@@ -1046,63 +1027,63 @@ class Transaction extends React.Component {
                                         iconName={"locked"}
                                     />
                                 </a>
-                            </td>
+                            </div>
                         ) : null;
                     }
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.assets.issuer"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].issuer)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].issuer)}</div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.asset_issue"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     style={{ fontWeight: "bold" }}
                                     amount={op[1].asset_to_issue.amount}
                                     asset={op[1].asset_to_issue.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.to"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].issue_to_account)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     {
                         memo
                             ? rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate content="transfer.memo" />
-                                    </td>
+                                    </div>
                                     {memo}
-                                </tr>
+                                </div>
                             )
                             : null;
                     }
@@ -1115,32 +1096,32 @@ class Transaction extends React.Component {
                     color = "cancel";
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].payer)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].payer)}</div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount_to_burn.amount}
                                     asset={op[1].amount_to_burn.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -1150,44 +1131,44 @@ class Transaction extends React.Component {
                 case "asset_fund_fee_pool":
                     color = "warning";
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].from_account)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].from_account)}</div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.asset.title"
                                 />
-                            </td>
-                            <td>{this.linkToAsset(op[1].asset_id)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAsset(op[1].asset_id)}</div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount}
                                     asset="1.3.0"
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -1198,44 +1179,44 @@ class Transaction extends React.Component {
                     color = "warning";
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].account)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].account)}</div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.asset.title"
                                 />
-                            </td>
-                            <td>{this.linkToAsset(op[1].amount.asset_id)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAsset(op[1].amount.asset_id)}</div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount.amount}
                                     asset={op[1].amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -1247,70 +1228,70 @@ class Transaction extends React.Component {
                     let { feed } = op[1];
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.publisher"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].publisher)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].publisher)}</div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.asset.title"
                                 />
-                            </td>
-                            <td>{this.linkToAsset(op[1].asset_id)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAsset(op[1].asset_id)}</div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.asset.price_feed.maximum_short_squeeze_ratio"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {(
                                     feed.maximum_short_squeeze_ratio / 1000
                                 ).toFixed(2)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.asset.price_feed.maintenance_collateral_ratio"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {(
                                     feed.maintenance_collateral_ratio / 1000
                                 ).toFixed(2)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="markets.core_rate"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedPrice
                                     base_asset={
                                         feed.core_exchange_rate.base.asset_id
@@ -1326,19 +1307,19 @@ class Transaction extends React.Component {
                                     }
                                     noPopOver
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.settlement_price"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedPrice
                                     base_asset={
                                         feed.settlement_price.base.asset_id
@@ -1354,8 +1335,8 @@ class Transaction extends React.Component {
                                     }
                                     noPopOver
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -1364,19 +1345,19 @@ class Transaction extends React.Component {
 
                 case "committee_member_create":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.committee_member.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(
                                     op[1].committee_member_account
                                 )}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -1385,15 +1366,15 @@ class Transaction extends React.Component {
 
                 case "witness_create":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.witness"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].witness_account)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].witness_account)}</div>
+                        </div>
                     );
 
                     break;
@@ -1402,27 +1383,27 @@ class Transaction extends React.Component {
 
                 case "witness_update":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.witness"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].witness_account)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].witness_account)}</div>
+                        </div>
                     );
 
                     if (op[1].new_url) {
                         rows.push(
-                            <tr key={key++}>
-                                <td>
+                            <div key={key++} className="transaction__row">
+                                <div>
                                     <Translate
                                         component="span"
                                         content="transaction.new_url"
                                     />
-                                </td>
-                                <td>
+                                </div>
+                                <div>
                                     <a
                                         href={op[1].new_url}
                                         target="_blank"
@@ -1430,8 +1411,8 @@ class Transaction extends React.Component {
                                     >
                                         {op[1].new_url}
                                     </a>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         );
                     }
 
@@ -1445,58 +1426,58 @@ class Transaction extends React.Component {
                     let bal_id = op[1].balance_to_claim.substring(5);
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.claimed"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].total_claimed.amount}
                                     asset={op[1].total_claimed.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.deposit_to"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].deposit_to_account)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.balance_id"
                                 />
-                            </td>
-                            <td>#{bal_id}</td>
-                        </tr>
+                            </div>
+                            <div>#{bal_id}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.balance_owner"
                                 />
-                            </td>
-                            <td style={{ fontSize: "80%" }}>
+                            </div>
+                            <div style={{ fontSize: "80%" }}>
                                 {op[1].balance_owner_key.substring(0, 10)}
                                 ...
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -1506,31 +1487,31 @@ class Transaction extends React.Component {
                     color = "success";
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.to"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].owner)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].owner)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount.amount}
                                     asset={op[1].amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -1539,60 +1520,60 @@ class Transaction extends React.Component {
 
                 case "transfer_to_blind":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.from"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].from)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].from)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount.amount}
                                     asset={op[1].amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.blinding_factor"
                                 />
-                            </td>
-                            <td style={{ fontSize: "80%" }}>
+                            </div>
+                            <div style={{ fontSize: "80%" }}>
                                 {op[1].blinding_factor}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.outputs"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <Inspector
                                     data={op[1].outputs[0]}
                                     search={false}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -1600,60 +1581,60 @@ class Transaction extends React.Component {
 
                 case "transfer_from_blind":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.to"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].to)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].to)}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount.amount}
                                     asset={op[1].amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.blinding_factor"
                                 />
-                            </td>
-                            <td style={{ fontSize: "80%" }}>
+                            </div>
+                            <div style={{ fontSize: "80%" }}>
                                 {op[1].blinding_factor}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.inputs"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <Inspector
                                     data={op[1].inputs[0]}
                                     search={false}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -1661,36 +1642,36 @@ class Transaction extends React.Component {
 
                 case "blind_transfer":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.inputs"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <Inspector
                                     data={op[1].inputs[0]}
                                     search={false}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.outputs"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <Inspector
                                     data={op[1].outputs[0]}
                                     search={false}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -1705,14 +1686,14 @@ class Transaction extends React.Component {
                         : expiration_date.getTime() -
                         op[1].review_period_seconds * 1000;
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="proposal_create.review_period"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {has_review_period ? (
                                     <FormattedDate
                                         value={new Date(review_begin_time)}
@@ -1721,24 +1702,24 @@ class Transaction extends React.Component {
                                 ) : (
                                     <span>&mdash;</span>
                                 )}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="proposal_create.expiration_time"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedDate
                                     value={expiration_date}
                                     format="full"
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     var operations = [];
                     for (let pop of op[1].proposed_ops) operations.push(pop.op);
@@ -1759,28 +1740,28 @@ class Transaction extends React.Component {
                     });
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="proposal_create.proposed_operations"
                                 />
-                            </td>
-                            <td>{proposalsText}</td>
-                        </tr>
+                            </div>
+                            <div>{proposalsText}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="proposal_create.fee_paying_account"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].fee_paying_account)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -1797,41 +1778,41 @@ class Transaction extends React.Component {
                     ];
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="proposal_create.fee_paying_account"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].fee_paying_account)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="proposal_create.id"
                                 />
-                            </td>
-                            <td>{op[1].proposal}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].proposal}</div>
+                        </div>
                     );
 
                     fields.forEach(field => {
                         if (op[1][field].length) {
                             rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate
                                             content={`proposal.update.${field}`}
                                         />
-                                    </td>
-                                    <td>
+                                    </div>
+                                    <div>
                                         {op[1][field].map(value => {
                                             return (
                                                 <div key={value}>
@@ -1839,8 +1820,8 @@ class Transaction extends React.Component {
                                                 </div>
                                             );
                                         })}
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             );
                         }
                     });
@@ -1852,43 +1833,43 @@ class Transaction extends React.Component {
                 case "proposal_delete":
                     color = "cancel";
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="proposal_create.fee_paying_account"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].fee_paying_account)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="proposal_delete.using_owner_authority"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <TranslateBoolean
                                     value={op[1].using_owner_authority}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="proposal_create.id"
                                 />
-                            </td>
-                            <td>{op[1].proposal}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].proposal}</div>
+                        </div>
                     );
                     break;
 
@@ -1898,32 +1879,32 @@ class Transaction extends React.Component {
                     color = "success";
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.claimed"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount_to_claim.amount}
                                     asset={op[1].amount_to_claim.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.deposit_to"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].issuer)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].issuer)}</div>
+                        </div>
                     );
 
                     break;
@@ -1932,48 +1913,48 @@ class Transaction extends React.Component {
 
                 case "asset_reserve":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="modal.reserve.from"
                                 />
-                            </td>
-                            <td>{this.linkToAccount(op[1].payer)}</td>
-                        </tr>
+                            </div>
+                            <div>{this.linkToAccount(op[1].payer)}</div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.asset.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAsset(
                                     op[1].amount_to_reserve.asset_id
                                 )}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount_to_reserve.amount}
                                     asset={op[1].amount_to_reserve.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -1981,15 +1962,15 @@ class Transaction extends React.Component {
 
                 case "worker_create":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.workers.title"
                                 />
-                            </td>
-                            <td>{op[1].name}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].name}</div>
+                        </div>
                     );
 
                     let startDate = counterpart.localize(
@@ -2002,64 +1983,64 @@ class Transaction extends React.Component {
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.workers.period"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {startDate} - {endDate}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.workers.daily_pay"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].daily_pay}
                                     asset="1.3.0"
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.workers.website"
                                 />
-                            </td>
-                            <td>{op[1].url}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].url}</div>
+                        </div>
                     );
 
                     if (op[1].initializer[1]) {
                         rows.push(
-                            <tr key={key++}>
-                                <td>
+                            <div key={key++} className="transaction__row">
+                                <div>
                                     <Translate
                                         component="span"
                                         content="explorer.workers.vesting_pay"
                                     />
-                                </td>
-                                <td>
+                                </div>
+                                <div>
                                     {
                                         op[1].initializer[1]
                                             .pay_vesting_period_days
                                     }
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         );
                     }
 
@@ -2069,47 +2050,47 @@ class Transaction extends React.Component {
 
                 case "asset_claim_pool":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="account.name"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].issuer} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.asset.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAssetById asset={op[1].asset_id} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount_to_claim.amount}
                                     asset={op[1].amount_to_claim.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -2117,47 +2098,47 @@ class Transaction extends React.Component {
 
                 case "asset_update_issuer":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.from"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].issuer} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.to"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].new_issuer} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.asset.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAssetById
                                     asset={op[1].asset_to_update}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -2166,51 +2147,51 @@ class Transaction extends React.Component {
 
                 case "bid_collateral":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].bidder} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.asset.collateral_bid.collateral"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     asset={op[1].additional_collateral.asset_id}
                                     amount={op[1].additional_collateral.amount}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.asset.collateral_bid.debt"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     asset={op[1].debt_covered.asset_id}
                                     amount={op[1].debt_covered.amount}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -2219,75 +2200,75 @@ class Transaction extends React.Component {
 
                 case "account_status_upgrade":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.account_upgrade"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {this.linkToAccount(op[1].account_to_upgrade)}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     {
                         op[1].referral_status_type == 1
                             ? rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate
                                             component="span"
                                             content="explorer.block.new_contract"
                                         />
-                                    </td>
-                                    <td>Start</td>
-                                </tr>
+                                    </div>
+                                    <div>Start</div>
+                                </div>
                             )
                             : null;
                     }
                     {
                         op[1].referral_status_type == 2
                             ? rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate
                                             component="span"
                                             content="explorer.block.new_contract"
                                         />
-                                    </td>
-                                    <td>Expert</td>
-                                </tr>
+                                    </div>
+                                    <div>Expert</div>
+                                </div>
                             )
                             : null;
                     }
                     {
                         op[1].referral_status_type == 3
                             ? rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate
                                             component="span"
                                             content="explorer.block.new_contract"
                                         />
-                                    </td>
-                                    <td>Citizen</td>
-                                </tr>
+                                    </div>
+                                    <div>Citizen</div>
+                                </div>
                             )
                             : null;
                     }
                     {
                         op[1].referral_status_type == 4
                             ? rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate
                                             component="span"
                                             content="explorer.block.new_contract"
                                         />
-                                    </td>
-                                    <td>Infinity</td>
-                                </tr>
+                                    </div>
+                                    <div>Infinity</div>
+                                </div>
                             )
                             : null;
                     }
@@ -2297,30 +2278,30 @@ class Transaction extends React.Component {
 
                 case "flipcoin_bet":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].bettor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.bet_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset amount={op[1].bet.amount} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -2328,30 +2309,30 @@ class Transaction extends React.Component {
 
                 case "flipcoin_call":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].caller} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.bet_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset amount={op[1].bet.amount} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -2359,32 +2340,32 @@ class Transaction extends React.Component {
 
                 case "lottery_goods_create_lot":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].owner} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.lot_create"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].ticket_price.amount}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -2392,34 +2373,34 @@ class Transaction extends React.Component {
 
                 case "lottery_goods_buy_ticket":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].participant}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.lottery_ticket_price"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].ticket_price.amount}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -2432,14 +2413,14 @@ class Transaction extends React.Component {
                         );
 
                         memo = text ? (
-                            <td
+                            <div
                                 className="memo"
                                 style={{ wordBreak: "break-all" }}
                             >
                                 {text}
-                            </td>
+                            </div>
                         ) : !text && isMine ? (
-                            <td>
+                            <div>
                                 <Translate content="transfer.memo_unlock" />
                                 &nbsp;
                                 <a onClick={this._toggleLock.bind(this)}>
@@ -2449,31 +2430,31 @@ class Transaction extends React.Component {
                                         iconName={"locked"}
                                     />
                                 </a>
-                            </td>
+                            </div>
                         ) : null;
                     }
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].winner} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     {
                         memo
                             ? rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate content="transfer.memo" />
-                                    </td>
+                                    </div>
                                     {memo}
-                                </tr>
+                                </div>
                             )
                             : null;
                     }
@@ -2484,32 +2465,32 @@ class Transaction extends React.Component {
 
                 case "lottery_goods_confirm_delivery":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].winner} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.lot_num"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].lot_id.lottery_goods}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -2518,54 +2499,54 @@ class Transaction extends React.Component {
 
                 case "matrix_open_room":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.account.title"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].player} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.matrix_id"
                                 />
-                            </td>
-                            <td>{op[1].matrix_id}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].matrix_id}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.matrix_level"
                                 />
-                            </td>
-                            <td>{op[1].matrix_level}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].matrix_level}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.matrix_price"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].level_price.amount}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -2578,29 +2559,29 @@ class Transaction extends React.Component {
                         .replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, "$1");
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.trader"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].p2p_gateway}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.adv_type"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {op[1].adv_type ? (
                                     <Translate
                                         component="span"
@@ -2612,117 +2593,117 @@ class Transaction extends React.Component {
                                         content="transaction.trxTypes.p2p_ops.adv_type_buy"
                                     />
                                 )}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.adv_description"
                                 />
-                            </td>
-                            <td>{op[1].adv_description}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].adv_description}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.min_cwd"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset amount={op[1].min_cwd} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.max_cwd"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset amount={op[1].max_cwd} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.price"
                                 />
-                            </td>
-                            <td>{price}</td>
-                        </tr>
+                            </div>
+                            <div>{price}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.currency"
                                 />
-                            </td>
-                            <td>{op[1].currency}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].currency}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.min_p2p_complete_deals"
                                 />
-                            </td>
-                            <td>{op[1].min_p2p_complete_deals}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].min_p2p_complete_deals}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.min_account_status"
                                 />
-                            </td>
-                            <td>{op[1].min_account_status}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].min_account_status}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.timelimit_for_reply"
                                 />
-                            </td>
-                            <td>{op[1].timelimit_for_reply / 60}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].timelimit_for_reply / 60}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.timelimit_for_approve"
                                 />
-                            </td>
-                            <td>{op[1].timelimit_for_approve / 60}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].timelimit_for_approve / 60}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>Geo</td>
-                            <td>{op[1].geo}</td>
-                        </tr>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">Geo</div>
+                            <div>{op[1].geo}</div>
+                        </div>
                     );
                     break;
 
@@ -2737,14 +2718,14 @@ class Transaction extends React.Component {
                             .replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, "$1");
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.adv_type"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {op[1].status ? (
                                     <Translate
                                         component="span"
@@ -2756,33 +2737,33 @@ class Transaction extends React.Component {
                                         content="transaction.trxTypes.p2p_ops.status_inactive"
                                     />
                                 )}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.trader"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].p2p_gateway}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.adv_type"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {op[1].adv_type ? (
                                     <Translate
                                         component="span"
@@ -2794,117 +2775,117 @@ class Transaction extends React.Component {
                                         content="transaction.trxTypes.p2p_ops.adv_type_buy"
                                     />
                                 )}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.adv_description"
                                 />
-                            </td>
-                            <td>{op[1].adv_description}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].adv_description}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.min_cwd"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset amount={op[1].min_cwd} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.max_cwd"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset amount={op[1].max_cwd} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.price"
                                 />
-                            </td>
-                            <td>{price}</td>
-                        </tr>
+                            </div>
+                            <div>{price}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.currency"
                                 />
-                            </td>
-                            <td>{op[1].currency}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].currency}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.min_p2p_complete_deals"
                                 />
-                            </td>
-                            <td>{op[1].min_p2p_complete_deals}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].min_p2p_complete_deals}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.min_account_status"
                                 />
-                            </td>
-                            <td>{op[1].min_account_status}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].min_account_status}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.timelimit_for_reply"
                                 />
-                            </td>
-                            <td>{op[1].timelimit_for_reply / 60}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].timelimit_for_reply / 60}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.timelimit_for_approve"
                                 />
-                            </td>
-                            <td>{op[1].timelimit_for_approve / 60}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].timelimit_for_approve / 60}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>Geo</td>
-                            <td>{op[1].geo}</td>
-                        </tr>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">Geo</div>
+                            <div>{op[1].geo}</div>
+                        </div>
                     );
                     break;
 
@@ -2917,70 +2898,70 @@ class Transaction extends React.Component {
                         .replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, "$1");
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_adv"
                                 />
-                            </td>
-                            <td>{op[1].p2p_adv}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].p2p_adv}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.quantity"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount.amount}
                                     asset={op[1].amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.price"
                                 />
-                            </td>
-                            <td>{price}</td>
-                        </tr>
+                            </div>
+                            <div>{price}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.trader"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].p2p_gateway}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_client"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].p2p_client} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -2988,53 +2969,53 @@ class Transaction extends React.Component {
 
                 case "cancel_p2p_order":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.trader"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].p2p_gateway}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_client"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].p2p_client} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_order"
                                 />
-                            </td>
-                            <td>{op[1].p2p_order}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].p2p_order}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.blacklist"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {op[1].blacklist ? (
                                     <Translate
                                         component="span"
@@ -3046,8 +3027,8 @@ class Transaction extends React.Component {
                                         content="transaction.trxTypes.p2p_ops.blacklist_false"
                                     />
                                 )}
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -3060,70 +3041,70 @@ class Transaction extends React.Component {
                         .replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, "$1");
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_order"
                                 />
-                            </td>
-                            <td>{op[1].p2p_order}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].p2p_order}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.quantity"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount.amount}
                                     asset={op[1].amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.price"
                                 />
-                            </td>
-                            <td>{price}</td>
-                        </tr>
+                            </div>
+                            <div>{price}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.trader"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].p2p_gateway}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_client"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].p2p_client} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -3131,45 +3112,45 @@ class Transaction extends React.Component {
 
                 case "payment_p2p_order":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_order"
                                 />
-                            </td>
-                            <td>{op[1].p2p_order}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].p2p_order}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.trader"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].recieving_account}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_client"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].paying_account}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -3177,45 +3158,45 @@ class Transaction extends React.Component {
 
                 case "release_p2p_order":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_order"
                                 />
-                            </td>
-                            <td>{op[1].p2p_order}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].p2p_order}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.trader"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].recieving_account}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_client"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].paying_account}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -3223,54 +3204,54 @@ class Transaction extends React.Component {
 
                 case "open_p2p_dispute":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_order"
                                 />
-                            </td>
-                            <td>{op[1].p2p_order}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].p2p_order}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.applicant"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].account} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.defendant"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].defendant} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.arbitr"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].arbitr} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -3278,41 +3259,41 @@ class Transaction extends React.Component {
 
                 case "reply_p2p_dispute":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_order"
                                 />
-                            </td>
-                            <td>{op[1].p2p_order}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].p2p_order}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.reply_disput"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].account} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.arbitr"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].arbitr} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -3320,45 +3301,45 @@ class Transaction extends React.Component {
 
                 case "remove_from_p2p_adv_black_list":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.p2p_adv"
                                 />
-                            </td>
-                            <td>{op[1].p2p_adv}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].p2p_adv}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.trader"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].p2p_gateway}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.p2p_ops.black_acc"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById
                                     account={op[1].blacklisted}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -3373,14 +3354,14 @@ class Transaction extends React.Component {
                         );
 
                         memo = text ? (
-                            <td
+                            <div
                                 className="memo"
                                 style={{ wordBreak: "break-all" }}
                             >
                                 {text}
-                            </td>
+                            </div>
                         ) : !text && isMine ? (
-                            <td>
+                            <div>
                                 <Translate content="transfer.memo_unlock" />
                                 &nbsp;
                                 <a onClick={this._toggleLock.bind(this)}>
@@ -3390,45 +3371,45 @@ class Transaction extends React.Component {
                                         iconName={"locked"}
                                     />
                                 </a>
-                            </td>
+                            </div>
                         ) : null;
                     }
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.from"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].from} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transfer.to"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].to} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     {
                         memo
                             ? rows.push(
-                                <tr key={key++}>
-                                    <td>
+                                <div key={key++} className="transaction__row">
+                                    <div>
                                         <Translate content="transfer.memo" />
-                                    </td>
+                                    </div>
                                     {memo}
-                                </tr>
+                                </div>
                             )
                             : null;
                     }
@@ -3440,32 +3421,32 @@ class Transaction extends React.Component {
                 //CREDIT OPS
                 case "credit_system_get":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.debitor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].debitor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.credit_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].credit_amount.amount}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -3474,45 +3455,45 @@ class Transaction extends React.Component {
 
                 case "credit_repay":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.creditor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].creditor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.debitor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].debitor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.repay_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].repay_amount.amount}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -3526,58 +3507,58 @@ class Transaction extends React.Component {
                         .replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, "$1");
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.creditor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].creditor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.credit_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].credit_amount.amount}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.repay_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].repay_amount.amount}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.min_income"
                                 />
-                            </td>
-                            <td>{min_income}</td>
-                        </tr>
+                            </div>
+                            <div>{min_income}</div>
+                        </div>
                     );
 
                     break;
@@ -3586,28 +3567,28 @@ class Transaction extends React.Component {
 
                 case "credit_offer_cancel":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.creditor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LLinkToAccountById account={op[1].creditor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.credit_offer"
                                 />
-                            </td>
-                            <td>{op[1].credit_offer}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].credit_offer}</div>
+                        </div>
                     );
                     break;
 
@@ -3615,56 +3596,56 @@ class Transaction extends React.Component {
 
                 case "credit_offer_fill":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.debitor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].debitor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.creditor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].creditor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.credit_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].credit_amount.amount}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.credit_offer"
                                 />
-                            </td>
-                            <td>{op[1].credit_offer}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].credit_offer}</div>
+                        </div>
                     );
 
                     break;
@@ -3673,76 +3654,76 @@ class Transaction extends React.Component {
 
                 case "pledge_offer_give_create":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.creditor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].creditor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.pledge_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].pledge_amount.amount}
                                     asset={op[1].pledge_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.credit_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].credit_amount.amount}
                                     asset={op[1].credit_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.repay_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].repay_amount.amount}
                                     asset={op[1].repay_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.pledge_days"
                                 />
-                            </td>
-                            <td>{op[1].pledge_days}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].pledge_days}</div>
+                        </div>
                     );
 
                     break;
@@ -3751,76 +3732,76 @@ class Transaction extends React.Component {
 
                 case "pledge_offer_take_create":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.debitor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].debitor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.pledge_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].pledge_amount.amount}
                                     asset={op[1].pledge_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.credit_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].credit_amount.amount}
                                     asset={op[1].credit_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.repay_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].repay_amount.amount}
                                     asset={op[1].repay_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.pledge_days"
                                 />
-                            </td>
-                            <td>{op[1].pledge_days}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].pledge_days}</div>
+                        </div>
                     );
 
                     break;
@@ -3829,28 +3810,28 @@ class Transaction extends React.Component {
 
                 case "pledge_offer_cancel":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.creator"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].creator} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.pledge_offer"
                                 />
-                            </td>
-                            <td>{op[1].pledge_offer}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].pledge_offer}</div>
+                        </div>
                     );
                     break;
 
@@ -3858,89 +3839,89 @@ class Transaction extends React.Component {
 
                 case "pledge_offer_fill":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.debitor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].debitor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.creditor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].creditor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.credit_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].credit_amount.amount}
                                     asset={op[1].credit_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.pledge_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].pledge_amount.amount}
                                     asset={op[1].pledge_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.repay_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].repay_amount.amount}
                                     asset={op[1].repay_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.pledge_days"
                                 />
-                            </td>
-                            <td>{op[1].pledge_days}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].pledge_days}</div>
+                        </div>
                     );
 
                     break;
@@ -3949,73 +3930,73 @@ class Transaction extends React.Component {
 
                 case "pledge_offer_repay":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.debitor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].debitor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.creditor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].creditor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.repay_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].repay_amount.amount}
                                     asset={op[1].repay_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.pledge_offer"
                                 />
-                            </td>
-                            <td>{op[1].pledge_offer}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].pledge_offer}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.credit_ops.pledge_amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].pledge_amount.amount}
                                     asset={op[1].pledge_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -4024,65 +4005,65 @@ class Transaction extends React.Component {
 
                 case "poc_vote":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.account"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].account} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.poc_vote_ops.poc3_vote"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].poc3_vote.amount}
                                     asset={op[1].poc3_vote.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.poc_vote_ops.poc6_vote"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].poc6_vote.amount}
                                     asset={op[1].poc6_vote.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.poc_vote_ops.poc12_vote"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].poc12_vote.amount}
                                     asset={op[1].poc12_vote.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
 
@@ -4090,33 +4071,33 @@ class Transaction extends React.Component {
 
                 case "exchange_silver":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.account"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].account} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount.amount}
                                     asset={op[1].amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -4125,50 +4106,50 @@ class Transaction extends React.Component {
 
                 case "poc_stak":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.account"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].account} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].stak_amount.amount}
                                     asset={op[1].stak_amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.poc_stak_ops.staking_type"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 {op[1].staking_type}&nbsp;
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.poc_stak_ops.months"
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -4177,33 +4158,33 @@ class Transaction extends React.Component {
 
                 case "buy_gcwd":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.account"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].account} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.amount"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].amount.amount}
                                     asset={op[1].amount.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -4212,30 +4193,30 @@ class Transaction extends React.Component {
 
                 case "change_referrer":
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.account"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].account_id} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.new_referrer"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].new_referrer} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -4245,39 +4226,39 @@ class Transaction extends React.Component {
                 case "gr_team_create":
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.captain"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].captain} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.team"
                                 />
-                            </td>
-                            <td>{op[1].name}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].name}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.description"
                                 />
-                            </td>
-                            <td>{op[1].description}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].description}</div>
+                        </div>
                     );
 
                     break;
@@ -4287,28 +4268,28 @@ class Transaction extends React.Component {
                 case "gr_team_delete":
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.captain"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].captain} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.team"
                                 />
-                            </td>
-                            <td>{op[1].team}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].team}</div>
+                        </div>
                     );
 
                     break;
@@ -4318,41 +4299,41 @@ class Transaction extends React.Component {
                 case "gr_invite_send":
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.captain"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].captain} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.player"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].player} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.team"
                                 />
-                            </td>
-                            <td>{op[1].team}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].team}</div>
+                        </div>
                     );
 
                     break;
@@ -4362,41 +4343,41 @@ class Transaction extends React.Component {
                 case "gr_invite_accept":
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.captain"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].captain} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.player"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].player} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.team"
                                 />
-                            </td>
-                            <td>{op[1].team}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].team}</div>
+                        </div>
                     );
 
                     break;
@@ -4406,41 +4387,41 @@ class Transaction extends React.Component {
                 case "gr_player_remove":
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.captain"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].captain} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.player"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].player} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.team"
                                 />
-                            </td>
-                            <td>{op[1].team}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].team}</div>
+                        </div>
                     );
 
                     break;
@@ -4450,41 +4431,41 @@ class Transaction extends React.Component {
                 case "gr_team_leave":
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.captain"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].captain} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.player"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].player} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.team"
                                 />
-                            </td>
-                            <td>{op[1].team}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].team}</div>
+                        </div>
                     );
 
                     break;
@@ -4493,17 +4474,17 @@ class Transaction extends React.Component {
                 case "gr_vote":
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.captain"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].player} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
 
                     break;
@@ -4513,54 +4494,54 @@ class Transaction extends React.Component {
                 case "gr_range_bet":
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.bettor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].bettor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.bet"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].bet.amount}
                                     asset={op[1].bet.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.great_race.team"
                                 />
-                            </td>
-                            <td>{op[1].team}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].team}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.result"
                                 />
-                            </td>
-                            <td>{op[1].result ?
+                            </div>
+                            <div>{op[1].result ?
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.result_true"
@@ -4570,30 +4551,30 @@ class Transaction extends React.Component {
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.result_false"
                                 />
-                            }</td>
-                        </tr>
+                            }</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.lower_rank"
                                 />
-                            </td>
-                            <td>{op[1].lower_rank}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].lower_rank}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.upper_rank"
                                 />
-                            </td>
-                            <td>{op[1].upper_rank}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].upper_rank}</div>
+                        </div>
                     );
 
                     break;
@@ -4603,66 +4584,66 @@ class Transaction extends React.Component {
                 case "gr_team_bet":
 
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.bettor"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <LinkToAccountById account={op[1].bettor} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.bet"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <FormattedAsset
                                     amount={op[1].bet.amount}
                                     asset={op[1].bet.asset_id}
                                 />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.team1"
                                 />
-                            </td>
-                            <td>{op[1].team1}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].team1}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.team2"
                                 />
-                            </td>
-                            <td>{op[1].team2}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].team2}</div>
+                        </div>
                     );
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="transaction.trxTypes.gr_bets.winner"
                                 />
-                            </td>
-                            <td>{op[1].winner}</td>
-                        </tr>
+                            </div>
+                            <div>{op[1].winner}</div>
+                        </div>
                     );
                     break;
 
@@ -4670,17 +4651,17 @@ class Transaction extends React.Component {
 
                 default:
                     rows.push(
-                        <tr key={key++}>
-                            <td>
+                        <div key={key++} className="transaction__row">
+                            <div className="transaction__legend">
                                 <Translate
                                     component="span"
                                     content="explorer.block.op"
                                 />
-                            </td>
-                            <td>
+                            </div>
+                            <div>
                                 <Inspector data={op} search={false} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     );
                     break;
             }
@@ -4700,7 +4681,7 @@ class Transaction extends React.Component {
             );
         });
 
-        return <div>{info}</div>;
+        return <div className="transaction__wrap">{info}</div>;
     }
 }
 

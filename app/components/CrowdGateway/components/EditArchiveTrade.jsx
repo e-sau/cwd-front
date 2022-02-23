@@ -53,6 +53,7 @@ class EditArchiveTrade extends React.Component {
                                 key={tradeItem["id"]}
                                 tradeItem={tradeItem}
                                 currentAccount={currentAccount}
+                                history={this.props.history}
                             />
                         ))}
                     </ul>

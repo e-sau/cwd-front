@@ -15,7 +15,7 @@ import {withRouter} from "react-router-dom";
 import {Table, Icon, Popover} from "crowdwiz-ui-modal";
 import sanitize from "sanitize";
 
-require("./scss/explore-witness.scss");
+require("./scss/explorer-witness.scss");
 
 class WitnessRow extends React.Component {
     static propTypes = {
@@ -432,39 +432,39 @@ class Witnesses extends React.Component {
 
         return (
             <section className="cwd-common__wrap" id="exploreWitnessWrap">
-                <div className="explore-witness">
-                    <div className="explore-witness__header">
-                        <div className="explore-witness__head-column">
+                <div className="explorer-witness">
+                    <div className="explorer-witness__header">
+                        <div className="explorer-witness__head-column">
                             <Translate
-                                className="explore-witness__title"
+                                className="explorer-witness__title"
                                 content="explorer.witnesses.current"
                             />
-                            <span className="explore-witness__current-witness">
+                            <span className="explorer-witness__current-witness">
                                 {currentAccount
                                     ? currentAccount.get("name")
                                     : null}
                             </span>
                         </div>
 
-                        <div className="explore-witness__head-column">
+                        <div className="explorer-witness__head-column">
                             <Translate
-                                className="explore-witness__title"
+                                className="explorer-witness__title"
                                 content="explorer.blocks.active_witnesses"
                             />
                             {Object.keys(globalObject.active_witnesses).length}
                         </div>
 
-                        <div className="explore-witness__head-column">
+                        <div className="explorer-witness__head-column">
                             <Translate
-                                className="explore-witness__title"
+                                className="explorer-witness__title"
                                 content="explorer.witnesses.participation"
                             />
                             {dynGlobalObject.participation}%
                         </div>
 
-                        <div className="explore-witness__head-column">
+                        <div className="explorer-witness__head-column">
                             <Translate
-                                className="explore-witness__title"
+                                className="explorer-witness__title"
                                 content="explorer.witnesses.pay"
                             />
                             <FormattedAsset
@@ -476,9 +476,9 @@ class Witnesses extends React.Component {
                             />
                         </div>
 
-                        <div className="explore-witness__head-column">
+                        <div className="explorer-witness__head-column">
                             <Translate
-                                className="explore-witness__title"
+                                className="explorer-witness__title"
                                 content="explorer.witnesses.budget"
                             />{" "}
                             <FormattedAsset
@@ -487,9 +487,9 @@ class Witnesses extends React.Component {
                             />
                         </div>
 
-                        <div className="explore-witness__head-column">
+                        <div className="explorer-witness__head-column">
                             <Translate
-                                className="explore-witness__title"
+                                className="explorer-witness__title"
                                 content="explorer.witnesses.next_vote"
                             />{" "}
                             <TimeAgo

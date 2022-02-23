@@ -18,12 +18,10 @@ class EditTradeForm extends React.Component {
             tradeItem: this.props.tradeItem,
             currentAccount: this.props.currentAccount,
             tradeStatus: true,
-            tradeType: this.props.tradeItem["adv_description"]
+            tradeType: this.props.tradeItem["adv_type"]
         };
         this.editTradeItem = this.editTradeItem.bind(this);
         this.tradeStatusCheck = this.tradeStatusCheck.bind(this);
-
-        this.tradeTypeCheck = this.tradeTypeCheck.bind(this);
 
         this.isWalletLocked = this.isWalletLocked.bind(this);
 
@@ -34,16 +32,18 @@ class EditTradeForm extends React.Component {
     }
 
     componentDidUpdate(nextProps) {
-        const {tradeItem} = this.props;
+        const { tradeItem } = this.props;
         if (nextProps.tradeItem !== tradeItem) {
             if (tradeItem) {
-                this.setState({tradeItem: nextProps.tradeItem});
+                this.setState({ 
+                    tradeItem: nextProps.tradeItem
+                });
             }
         }
     }
 
     tradeStatusCheck(tradeStatusId) {
-        if (tradeStatusId === true) {
+        if (tradeStatusId) {
             document
                 .getElementById("tradeStatusBuy")
                 .classList.remove("trade-form__radio-btn--active");
@@ -51,10 +51,6 @@ class EditTradeForm extends React.Component {
             document
                 .getElementById("tradeStatusSell")
                 .classList.add("trade-form__radio-btn--active");
-
-            this.setState({
-                tradeStatus: true
-            });
         } else {
             document
                 .getElementById("tradeStatusSell")
@@ -62,14 +58,14 @@ class EditTradeForm extends React.Component {
             document
                 .getElementById("tradeStatusBuy")
                 .classList.add("trade-form__radio-btn--active");
-            this.setState({
-                tradeStatus: false
-            });
         }
+        this.setState({
+            tradeStatus: tradeStatusId
+        });
     }
 
     tradeTypeCheck(tradeTypeId) {
-        if (tradeTypeId === true) {
+        if (tradeTypeId) {
             document
                 .getElementById("tradeTypeBuy")
                 .classList.remove("trade-form__radio-btn--active");
@@ -77,10 +73,6 @@ class EditTradeForm extends React.Component {
             document
                 .getElementById("tradeTypeSell")
                 .classList.add("trade-form__radio-btn--active");
-
-            this.setState({
-                tradeType: true
-            });
         } else {
             document
                 .getElementById("tradeTypeSell")
@@ -88,10 +80,11 @@ class EditTradeForm extends React.Component {
             document
                 .getElementById("tradeTypeBuy")
                 .classList.add("trade-form__radio-btn--active");
-            this.setState({
-                tradeType: false
-            });
         }
+
+        this.setState({
+            tradeType: tradeTypeId
+        });
     }
 
     showEditForm(e) {
@@ -146,7 +139,7 @@ class EditTradeForm extends React.Component {
                         AccountActions.tryToSetCurrentAccount();
                         this.editTradeItem();
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 this.editTradeItem();
             }
@@ -155,6 +148,7 @@ class EditTradeForm extends React.Component {
 
     editTradeItem() {
         let tradeStatus = this.state.tradeStatus ? 1 : 0;
+        let advType = this.state.tradeType;
         let description = document.getElementById("tradeDescription").value;
         let tradeMin =
             parseInt(document.getElementById("tradeMin").value) * 100000;
@@ -169,7 +163,7 @@ class EditTradeForm extends React.Component {
             tradePrice =
                 tradePriceArr[0] * 100000000 +
                 tradePriceArr[1].substr(0, 8) *
-                    Math.pow(10, 8 - tradePriceArr[1].substr(0, 8).length);
+                Math.pow(10, 8 - tradePriceArr[1].substr(0, 8).length);
         } else {
             tradePrice = tradePriceArr[0] * 100000000;
         }
@@ -189,7 +183,7 @@ class EditTradeForm extends React.Component {
         AccountActions.editP2pAdv(
             this.props.tradeItem["id"],
             this.props.tradeItem["p2p_gateway"],
-            this.props.tradeItem["adv_type"],
+            advType,
             description,
             tradeMax,
             tradeMin,
@@ -217,7 +211,7 @@ class EditTradeForm extends React.Component {
                             account
                         );
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 AccountActions.tryToSetCurrentAccount();
                 AccountActions.removeFromP2pAdvBlackList(
@@ -228,6 +222,16 @@ class EditTradeForm extends React.Component {
             }
         }
     }
+
+    onNavigate(item, e) {
+        e.preventDefault();
+
+        let itemId = item;
+        let idSplit = itemId.split(".");
+        let urlId = idSplit[2];
+
+        this.props.history.push(`/gateway/dex/item-${urlId}`);
+    };
 
     render() {
         let tradeItem = this.state.tradeItem;
@@ -253,19 +257,22 @@ class EditTradeForm extends React.Component {
             <li className="cwdgateway-active__item">
                 <div className="cwdgateway-active__wrap">
                     <div className="cwdgateway-active__inner cwdgateway-active__inner--non-p2p-block">
+                        {/* DEX ID  */}
+                        <span
+                            className="cwdgateway-active__item-id"
+                            onClick={this.onNavigate.bind(
+                                this,
+                                tradeItem["id"]
+                            )}>
+                            #{tradeItem["id"]}
+                        </span>
+
                         <span className="cwdgateway-active__name">
                             {advType}
                         </span>
                         <p className="cwdgateway-active__desc">
                             {tradeItem["adv_description"]}
                         </p>
-
-                        <div className="cwdgateway-active__row">
-                            <span className="cwdgateway-active__text">ID:</span>
-                            <span className="cwdgateway-active__text cwdgateway-active__text--data">
-                                {tradeItem["id"]}
-                            </span>
-                        </div>
 
                         <div className="cwdgateway-active__row">
                             <Translate
@@ -316,7 +323,7 @@ class EditTradeForm extends React.Component {
                                             />
 
                                             {index + 1 ==
-                                            tradeItem["black_list"].length
+                                                tradeItem["black_list"].length
                                                 ? ","
                                                 : null}
                                             <NewIcon
@@ -420,17 +427,12 @@ class EditTradeForm extends React.Component {
                                             <div className="trade-form__selection-wrap">
                                                 <span
                                                     className={
-                                                        this.props.tradeItem[
-                                                            "adv_type"
-                                                        ]
+                                                        this.state.tradeType
                                                             ? "trade-form__radio-btn trade-form__radio-btn--active"
                                                             : "trade-form__radio-btn"
                                                     }
                                                     id="tradeTypeSell"
-                                                    onClick={this.tradeTypeCheck.bind(
-                                                        this,
-                                                        true
-                                                    )}
+                                                    onClick={this.tradeTypeCheck.bind(this, true)}
                                                 >
                                                     <Translate
                                                         className="trade-form__radio-text"
@@ -439,17 +441,12 @@ class EditTradeForm extends React.Component {
                                                 </span>
                                                 <span
                                                     className={
-                                                        this.props.tradeItem[
-                                                            "adv_type"
-                                                        ]
+                                                        this.state.tradeType
                                                             ? "trade-form__radio-btn"
                                                             : "trade-form__radio-btn trade-form__radio-btn--active"
                                                     }
                                                     id="tradeTypeBuy"
-                                                    onClick={this.tradeTypeCheck.bind(
-                                                        this,
-                                                        false
-                                                    )}
+                                                    onClick={this.tradeTypeCheck.bind(this, false)}
                                                 >
                                                     <Translate
                                                         className="trade-form__radio-text"
@@ -471,7 +468,7 @@ class EditTradeForm extends React.Component {
                                             <textarea
                                                 className="cwdgateway__field cwdgateway__field--desc"
                                                 id="tradeDescription"
-                                                rows="8 "
+                                                rows="8"
                                                 name="description"
                                             />
                                         </label>

@@ -26,6 +26,7 @@
         font-size: 22px;
         color: #ffffff;
         line-height: 1.3;
+        text-transform: uppercase;
     }
 
     &__title-upper-case {
@@ -238,6 +239,16 @@
             transition: 200ms ease-in-out;
         }
     }
+
+    &__link {
+        color: #dec27f !important;
+        text-decoration: underline !important;
+        font-family: "CoreSansE-Light", arial, sans-serif;
+    }
+
+    &__account-name {
+        color: #dec27f;
+    }
 }
 
 #content-wrapper {
@@ -308,7 +319,6 @@
             font-size: 20px;
             margin-bottom: 13px;
         }
-
 
         &__sub-title {
             font-size: 18px;

@@ -13,6 +13,7 @@ import AchievementsBlock from "./components/AchievementsBlock";
 import Page404 from "../Page404/Page404";
 import ls from "common/localStorage";
 
+
 let ss = new ls("__graphene__");
 
 //STYLES
@@ -23,7 +24,7 @@ class UserProfile extends React.Component {
         super(props);
 
         let host = window.location.hostname;
-        if(["127.0.0","192.168"].includes(host.substring(0, 7))) {
+        if (["127.0.0", "192.168"].includes(host.substring(0, 7))) {
             host = "backup.cwd.global"
         }
 
@@ -45,7 +46,8 @@ class UserProfile extends React.Component {
             gotApiResult: false,
             grTeamId: "",
             grTeamName: "",
-            teamLogo: "https://"+host+"/static/cwd_preview.jpg"
+            teamLogo: "https://" + host + "/static/cwd_preview.jpg",
+            isContactAdded: false
         }
     }
 
@@ -84,14 +86,14 @@ class UserProfile extends React.Component {
                 }
                 else {
                     let host = window.location.hostname;
-                    if(["127.0.0","192.168"].includes(host.substring(0, 7))) {
+                    if (["127.0.0", "192.168"].includes(host.substring(0, 7))) {
                         host = "backup.cwd.global"
                     }
 
                     this.setState({
                         grTeamId: "",
                         grTeamName: "",
-                        teamLogo: "https://"+host+"/static/cwd_preview.jpg"
+                        teamLogo: "https://" + host + "/static/cwd_preview.jpg"
                     })
                 }
 
@@ -116,7 +118,6 @@ class UserProfile extends React.Component {
                     leadersLevel: data["leaders_level"]
                 });
             })
-
     }
 
     componentDidMount() {
@@ -144,6 +145,35 @@ class UserProfile extends React.Component {
         })
     }
 
+    addToContacts() {
+        let inspectedAccount = this.state.accountId;
+        let accountDescription = "";
+        let lsAddressBook = JSON.parse(localStorage.getItem("__cwd__addressBook"));
+
+        if (lsAddressBook === null) {
+            lsAddressBook = {};
+        }
+        lsAddressBook[inspectedAccount] = accountDescription;
+        localStorage.setItem("__cwd__addressBook", JSON.stringify(lsAddressBook));
+
+        this.setState({
+            isContactAdded: true
+        })
+    }
+
+    removeFromContacts(accountId) {
+        let lsAddressBook = JSON.parse(localStorage.getItem("__cwd__addressBook"));
+        if (accountId in lsAddressBook) {
+            delete lsAddressBook[accountId];
+            localStorage.setItem("__cwd__addressBook", JSON.stringify(lsAddressBook));
+        }
+
+
+        this.setState({
+            isContactAdded: false
+        })
+    }
+
     render() {
         let {
             isMessageModalVisible,
@@ -163,13 +193,25 @@ class UserProfile extends React.Component {
             gotApiResult,
             grTeamId,
             grTeamName,
-            teamLogo
+            teamLogo,
+            isContactAdded
         } = this.state;
 
         if (Object.keys(currentAccount).length > 0) {
             let currentAccountName = this.props.account.get("name");
             let toAccount = this.props.match.params.account_name;
             let notMyAccount = toAccount != currentAccountName;
+
+            let currentAddressBook = JSON.parse(localStorage.getItem("__cwd__addressBook"));
+            if (currentAddressBook === null) {
+                currentAddressBook = {};
+            }
+            if (accountId in currentAddressBook) {
+                isContactAdded = true
+            }
+            else {
+                isContactAdded = false
+            }
 
             return (
                 <section className="profile__wrap">
@@ -181,19 +223,51 @@ class UserProfile extends React.Component {
                             />
 
                             {notMyAccount ?
-                                <button
-                                    className="cwd-btn__action-btn"
-                                    type="button"
-                                    onClick={this.showMessageModal.bind(this)}
-                                >
-                                    <Translate content="send_message.message_btn" />
+                                <div className="profile__action-btn-wrap">
+                                    {isContactAdded ?
+                                        <button
+                                            className="cwd-btn__action-btn profile__btn--remove-contact"
+                                            type="button"
+                                            onClick={this.removeFromContacts.bind(this, accountId)}
+                                        >
+                                            <Translate content="address_book.remove_from_contacts_btn" />
 
-                                    <NewIcon
-                                        iconWidth={10}
-                                        iconHeight={12}
-                                        iconName={"send_message"}
-                                    />
-                                </button>
+                                            <NewIcon
+                                                iconWidth={11}
+                                                iconHeight={11}
+                                                iconName={"icon_plus"}
+                                            />
+                                        </button>
+                                        :
+                                        <button
+                                            className="cwd-btn__action-btn"
+                                            type="button"
+                                            onClick={this.addToContacts.bind(this)}
+                                        >
+                                            <Translate content="address_book.add_to_contacts_btn" />
+
+                                            <NewIcon
+                                                iconWidth={11}
+                                                iconHeight={11}
+                                                iconName={"icon_plus"}
+                                            />
+                                        </button>
+                                    }
+
+                                    <button
+                                        className="cwd-btn__action-btn"
+                                        type="button"
+                                        onClick={this.showMessageModal.bind(this)}
+                                    >
+                                        <Translate content="send_message.message_btn" />
+
+                                        <NewIcon
+                                            iconWidth={10}
+                                            iconHeight={12}
+                                            iconName={"send_message"}
+                                        />
+                                    </button>
+                                </div>
                                 : null}
                         </div>
 
@@ -221,6 +295,7 @@ class UserProfile extends React.Component {
                         {isMessageModalVisible ?
                             <SendMessage
                                 toAccountId={toAccountId}
+                                toAccountName={accountName}
                                 closeModal={this.closeMessageModal.bind(this)}
                             />
                             : null}

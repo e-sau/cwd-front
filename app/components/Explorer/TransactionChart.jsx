@@ -58,15 +58,16 @@ class TransactionChart extends React.Component {
 
         let colors = trxData.map(entry => {
             if (entry[1] <= 5) {
-                return "#e1c697";
+                return "#DEC27F";
             } else if (entry[1] <= 10) {
-                return "#A0D3E8";
+                return "#03d99d";
             } else if (entry[1] <= 20) {
-                return "#FCAB53";
+                return "#FF9D33";
             } else {
                 return "#deb869";
             }
         });
+        
 
         return {
             colors,
@@ -85,9 +86,9 @@ class TransactionChart extends React.Component {
         let config = {
             chart: {
                 type: "column",
-                backgroundColor: "#212121",
+                backgroundColor: "transparent",
                 spacing: [0, 0, 5, 0],
-                height: 100
+                height: 80
             },
             title: {
                 text: null
@@ -126,7 +127,8 @@ class TransactionChart extends React.Component {
                 },
                 title: {
                     text: null
-                }
+                },
+                lineColor: "#474747"
             },
             yAxis: {
                 min: 0,
@@ -140,7 +142,8 @@ class TransactionChart extends React.Component {
                 gridLineWidth: 0,
                 currentPriceIndicator: {
                     enabled: false
-                }
+                },
+                tickColor: "#474747"
             },
             plotOptions: {
                 column: {
@@ -148,7 +151,8 @@ class TransactionChart extends React.Component {
                     minPointLength: 5,
                     colorByPoint: true,
                     colors: colors,
-                    borderWidth: 0
+                    borderWidth: 0,
+                    borderRadius: 4
                 }
             }
         };

@@ -25,7 +25,7 @@ class LoadingIndicator extends React.Component {
         let loading = this.props.loading;
 
         return (
-            <div>
+            <div className="loading-panel__overlay">
                 <div className="loading-panel">
                     <img
                         src={cwdLogo}
@@ -53,7 +53,6 @@ class LoadingIndicator extends React.Component {
                         </span>
                     )}
                 </div>
-                <div className="loading-panel__overlay"></div>
             </div>
         );
     }

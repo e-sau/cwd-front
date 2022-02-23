@@ -667,7 +667,7 @@ class DynamicMenuItem extends React.Component {
         }
 
         //EXPLORER
-        if (active.indexOf("/blocks") !== -1) {
+        if (active.indexOf("/explorer") !== -1) {
             dynamicMenuItem = (
                 <div className="breadcrumbs__inner">
                     <span className="breadcrumbs__item breadcrumbs__item--active">
@@ -692,7 +692,7 @@ class DynamicMenuItem extends React.Component {
         if (active.indexOf("/witnesses") !== -1) {
             dynamicMenuItem = (
                 <div className="breadcrumbs__inner">
-                    <Link to="/explorer/blocks" className="breadcrumbs__item">
+                    <Link to="/explorer" className="breadcrumbs__item">
                         <NewIcon
                             iconClass={"breadcrumbs__icon"}
                             iconWidth={24}

@@ -102,7 +102,6 @@ class Row extends React.Component {
             mainPageMode,
             notificationMode,
             shortMode,
-            explorerMode
         } = this.props;
 
         let last_irreversible_block_num = this.props.dynGlobalObject.get(
@@ -179,30 +178,6 @@ class Row extends React.Component {
             )
         }
 
-        else if (explorerMode) {
-            return (
-                <div className="explorer__item">
-
-                    <div className="explorer__data-block">
-                        {/* OP NAME */}
-                        <div className="explorer__type">
-                            <TransactionLabel
-                                color={color}
-                                type={type}
-                                block={block}
-                            />
-                        </div>
-                    </div>
-
-
-                    {/* OP DESCRIPTION */}
-                    <div className="explorer__info">
-                        {this.props.info}
-                    </div>
-                </div>
-            )
-        }
-
         else {
             return (
                 <div className="operation__item">
@@ -219,7 +194,7 @@ class Row extends React.Component {
                                 {deviceWidth > 576 ? null :
                                     <span className="operation__legend">ID:</span>}
 
-                                <span>#{this.props.operationId}</span>
+                                <span>#{this.props.operationId ? this.props.operationId : block}</span>
                             </span>
 
                             {/* OP TIME */}
@@ -4234,7 +4209,6 @@ class Operation extends React.Component {
                 mainPageMode={this.props.mainPageMode}
                 notificationMode={this.props.notificationMode}
                 shortMode={this.props.shortMode}
-                explorerMode={this.props.explorerMode}
             />
         ) : null;
 

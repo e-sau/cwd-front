@@ -73,7 +73,7 @@ export const menuData = [
         isLockedView: true
     },
     {
-        route: "/explorer/blocks",
+        route: "/explorer",
         iconName: "left-menu_explorer",
         menuText: "account.explorer",
         itemID: "leftMenuId_10",

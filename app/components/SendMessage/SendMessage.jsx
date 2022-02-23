@@ -7,6 +7,10 @@ import AccountActions from "actions/AccountActions";
 import AccountStore from "stores/AccountStore";
 import { ChainStore } from "bitsharesjs";
 import { connect } from "alt-react";
+import counterpart from "counterpart";
+
+//STYLES
+import "./scss/send_message.scss";
 
 
 class SendMessage extends React.Component {
@@ -37,7 +41,7 @@ class SendMessage extends React.Component {
         let fromAccount = this.props.currentAccount.get("id");
         let toAccountId = this.props.toAccountId;
         let messageText = document.getElementById("messageText").value;
-        
+
         if (this.props.currentAccount) {
             if (WalletDb.isLocked()) {
                 WalletUnlockActions.unlock()
@@ -61,14 +65,17 @@ class SendMessage extends React.Component {
         }
     }
 
-    sendMessage() { }
-
     render() {
+        let { toAccountName } = this.props;
         let width = window.innerWidth;
 
         return (
             <div>
                 <div className="send-message-popup">
+                    <span className="send-message-popup__title">
+                        {counterpart.translate("send_message.message_title", { toAccountName })}
+                    </span>
+
                     <NewIcon
                         iconClass={"crowd-modal__close-modal-btn"}
                         iconWidth={40}
@@ -78,11 +85,6 @@ class SendMessage extends React.Component {
                     />
 
                     <div className="send-message-popup__inner">
-                        <Translate
-                            className="send-message-popup__text"
-                            content="send_message.message_text"
-                        />
-
                         <textarea
                             className="send-message-popup__field"
                             type="text"
@@ -118,7 +120,7 @@ export default SendMessage = connect(SendMessage, {
             return {
                 currentAccount: ChainStore.fetchFullAccount(
                     AccountStore.getState().currentAccount ||
-                        AccountStore.getState().passwordAccount
+                    AccountStore.getState().passwordAccount
                 )
             };
         }

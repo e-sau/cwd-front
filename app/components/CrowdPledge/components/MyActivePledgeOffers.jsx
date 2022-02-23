@@ -22,10 +22,10 @@ class MyActivePledgeOffers extends React.Component {
     }
 
     componentDidUpdate(nextProps) {
-        const {pledgeItem} = this.props;
+        const { pledgeItem } = this.props;
         if (nextProps.pledgeItem !== pledgeItem) {
             if (pledgeItem) {
-                this.setState({pledgeItem: nextProps.pledgeItem});
+                this.setState({ pledgeItem: nextProps.pledgeItem });
             }
         }
     }
@@ -42,7 +42,7 @@ class MyActivePledgeOffers extends React.Component {
                             pledgeItem
                         );
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 this.deletePledgeOffer(this.state.currentAccount, pledgeItem);
             }
@@ -63,19 +63,14 @@ class MyActivePledgeOffers extends React.Component {
 
         return (
             <li className="pledge-offer__item">
+                {/* PLEDGE ID  */}
+                <span className="pledge-offer__item-id">
+                    #{pledgeItem["id"]}
+                </span>
+
                 <div className="pledge-offer__wrap">
                     <div className="pledge-offer__inner">
                         <span className="pledge-offer__name">{pledgeType}</span>
-
-                        <div className="pledge-offer__row">
-                            <Translate
-                                className="pledge-offer__text"
-                                content="crowd_pledge.pledge_id"
-                            />
-                            <span className="pledge-offer__text pledge-offer__text--data pledge-offer__text--price">
-                                {pledgeItem["id"]}
-                            </span>
-                        </div>
 
                         <div className="pledge-offer__row">
                             <Translate

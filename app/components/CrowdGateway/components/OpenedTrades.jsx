@@ -111,7 +111,7 @@ class OpenedTrades extends React.Component {
                         );
                         this.closeTradeModal();
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 AccountActions.tryToSetCurrentAccount();
                 AccountActions.callP2pOrder(
@@ -150,7 +150,7 @@ class OpenedTrades extends React.Component {
                         }
                         this.closeConfirmModal();
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 AccountActions.tryToSetCurrentAccount();
                 if (this.props.openTrades.po.order_type) {
@@ -186,7 +186,7 @@ class OpenedTrades extends React.Component {
                             isBlackListed
                         );
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 AccountActions.tryToSetCurrentAccount();
                 AccountActions.cancelP2pOrder(
@@ -219,7 +219,7 @@ class OpenedTrades extends React.Component {
                             );
                         }
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 AccountActions.tryToSetCurrentAccount();
                 if (this.props.openTrades.po.order_type) {
@@ -268,7 +268,7 @@ class OpenedTrades extends React.Component {
                             );
                         }
                     })
-                    .catch(() => {});
+                    .catch(() => { });
                 this.closeTradeModal();
             } else {
                 AccountActions.tryToSetCurrentAccount();
@@ -326,7 +326,7 @@ class OpenedTrades extends React.Component {
                             );
                         }
                     })
-                    .catch(() => {});
+                    .catch(() => { });
                 this.closeTradeModal();
             } else {
                 AccountActions.tryToSetCurrentAccount();
@@ -580,8 +580,8 @@ class OpenedTrades extends React.Component {
 
         let summ = parseFloat(
             (openTrades["price"] * openTrades["amount"]["amount"]) /
-                100000 /
-                100000000
+            100000 /
+            100000000
         )
             .toFixed(8)
             .toString()
@@ -591,6 +591,11 @@ class OpenedTrades extends React.Component {
             <li className="cwdgateway-active__item cwdgateway-active__item--static">
                 <div className="cwdgateway-active__wrap">
                     <div className="cwdgateway-active__inner cwdgateway-active__inner--non-p2p-block">
+                        {/* DEX ID  */}
+                        <span className="cwdgateway-active__item-id">
+                            #{openTrades["id"]}
+                        </span>
+
                         <span className="cwdgateway-active__name">
                             {advType}
                         </span>
@@ -901,7 +906,7 @@ class OpenedTrades extends React.Component {
                                 onClick={this.confirmPayment.bind(this)}
                                 disabled={
                                     this.state.userImg ==
-                                        apiUrl + "/static/cwd_preview.jpg" ||
+                                    apiUrl + "/static/cwd_preview.jpg" ||
                                     this.state.userImg == ""
                                 }
                             >

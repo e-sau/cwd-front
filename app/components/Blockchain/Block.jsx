@@ -1,15 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {FormattedDate} from "react-intl";
-import Immutable from "immutable";
+import { FormattedDate } from "react-intl";
 import BlockchainActions from "actions/BlockchainActions";
 import Transaction from "./Transaction";
 import Translate from "react-translate-component";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import LinkToWitnessById from "../Utility/LinkToWitnessById";
-import {Element, Events, animateScroll as scroll, scroller} from "react-scroll";
-import SettingsActions from "actions/SettingsActions";
+import NewIcon from "../NewIcon/NewIcon";
+import counterpart from "counterpart";
+import { hash, ops } from "bitsharesjs";
+import ls from "common/localStorage";
+
+let ss = new ls("__graphene__");
+
+//STYLES
+import "./scss/block-browser.scss";
 
 class TransactionList extends React.Component {
     shouldComponentUpdate(nextProps) {
@@ -17,28 +23,38 @@ class TransactionList extends React.Component {
     }
 
     render() {
-        let {block} = this.props;
+        let { block } = this.props;
         let transactions = null;
-
         transactions = [];
 
         if (block.transactions.length > 0) {
             transactions = [];
 
             block.transactions.forEach((trx, index) => {
+                let buf2 = ops.transaction.toBuffer(trx)
+                // let buf2 = Buffer.from(JSON.stringify(trx))
+                let id = hash.sha256(buf2).toString('hex').substring(0, 40);
                 transactions.push(
-                    <Element
+                    <li
                         key={index}
                         id={`tx_${index}`}
                         name={`tx_${index}`}
+                        className="transaction__trx-item"
                     >
                         <Transaction key={index} trx={trx} index={index} />
-                    </Element>
+
+                        <div className="block-browser__info-row block-browser__info-row--tx-id">
+                            <span className="block-browser__info-text">TxID: </span>
+                            <span className="block-browser__info-data">{id}</span>
+                        </div>
+                    </li>
                 );
+
+
             });
         }
 
-        return <div>{transactions}</div>;
+        return <ul className="block-browser__trx-list">{transactions}</ul>;
     }
 }
 
@@ -59,47 +75,18 @@ class Block extends React.Component {
         super(props);
 
         this.state = {
-            showInput: false,
-            page: ""
-        };
-
-        this.scrollToTop = this.scrollToTop.bind(this);
+            showAlert: false
+        }
     }
 
     componentDidMount() {
         this._getBlock(this.props.height);
-
-        Events.scrollEvent.register("begin", () => {
-            //console.log("begin", arguments);
-        });
-
-        Events.scrollEvent.register("end", () => {
-            this.setState({scrollEnded: true});
-        });
     }
 
     UNSAFE_componentWillReceiveProps(np) {
         if (np.height !== this.props.height) {
             this._getBlock(np.height);
         }
-    }
-
-    // shouldComponentUpdate(np, ns) {
-    //     return (
-    //         !Immutable.is(np.blocks, this.props.blocks) ||
-    //         np.height !== this.props.height ||
-    //         np.dynGlobalObject !== this.props.dynGlobalObject ||
-    //         ns.showInput !== this.state.showInput
-    //     );
-    // }
-
-    scrollToTop() {
-        scroll.scrollToTop({
-            duration: 1500,
-            delay: 100,
-            smooth: true,
-            containerId: "blockContainer"
-        });
     }
 
     _getBlock(height) {
@@ -126,243 +113,217 @@ class Block extends React.Component {
         this.props.history.push(`/block/${previousBlock}`);
     }
 
-    toggleInput(e) {
-        e.preventDefault();
-        this.setState({showInput: true});
-    }
-
     _onKeyDown(e) {
         if (e && e.keyCode === 13) {
             this.props.history.push(`/block/${e.target.value}`);
-            this.setState({showInput: false});
         }
     }
 
-    _onSubmit() {
+    goToBlock() {
         const value = this.refs.blockInput.value;
         if (value) {
-            this._onKeyDown({keyCode: 13, target: {value}});
+            this._onKeyDown({ keyCode: 13, target: { value } });
         }
     }
 
-    componentDidUpdate() {
-        let {blocks} = this.props;
-        let height = parseInt(this.props.height, 10);
-        let block = blocks.get(height);
+    copyBlockHash() {
+        let apiUrl = ss.get("serviceApi");
+        let currentBlockHash = this.refs.currentBlockHash.innerText;
+        navigator.clipboard.writeText(apiUrl + "/block/" + currentBlockHash);
 
-        if (this.props.scrollToIndex && !this.state.scrollEnded && block) {
-            scroller.scrollTo(`tx_${this.props.scrollToIndex}`, {
-                duration: 1500,
-                delay: 100,
-                smooth: true,
-                offset: -100,
-                containerId: "blockContainer"
-            });
-        }
+        // SHOW ALERT
+        this.setState({
+            showAlert: true
+        });
+
+        this.timer = setTimeout(() => {
+            this.setState({ showAlert: false });
+        }, 2000);
     }
-
-    handleSubmit = e => {
-        e.preventDefault();
-        const {page} = this.state;
-        this._onNavigate(`/block/${page}`, e);
-    };
-
-    _onNavigate = (route, e) => {
-        e.preventDefault();
-
-        if (route == "/block") {
-            SettingsActions.changeViewSetting({
-                dashboardEntry: "block"
-            });
-        }
-
-        this.props.history.push(route);
-    };
-
-    handleChange = e => {
-        e.preventDefault();
-        const value = e.currentTarget.value;
-        const fieldName = e.currentTarget.dataset.fieldName;
-
-        this.setState(state => ({
-            ...state,
-            [fieldName]: value
-        }));
-    };
 
     render() {
-        const {showInput, page} = this.state;
-        let {blocks} = this.props;
+        let { blocks } = this.props;
         let height = parseInt(this.props.height, 10);
         let block = blocks.get(height);
+        let blockID = "";
+        let { showAlert } = this.state;
 
-        let blockHeight = showInput ? (
-            <span className="inline-label">
-                <input
-                    ref="blockInput"
-                    type="number"
-                    onKeyDown={this._onKeyDown.bind(this)}
-                />
-                <button onClick={this._onSubmit.bind(this)} className="button">
-                    <Translate content="explorer.block.go_to" />
-                </button>
-            </span>
-        ) : (
-            <span>
-                <Translate component="span" content="explorer.block.title" />
-                <a
-                    onClick={this.toggleInput.bind(this)}
-                    style={{color: "white"}}
-                >
-                    &nbsp;№{height}
-                </a>
-            </span>
-        );
+        if (block) {
+            let blockHeader = Object.assign({}, block);
+            delete blockHeader.transactions
+            let buf1 = ops.signed_block_header.toBuffer(blockHeader)
+            var createHash = require('create-hash')
+            var hashId = createHash('sha224')
+            hashId.update(buf1)
+            blockID = block.id.toString(16).padStart(8, "0") + hashId.digest().toString('hex').substring(8, 40)
+        }
 
         return (
-            <div className="grid-block page-layout">
-                <div className="grid-block main-content">
-                    <div className="grid-content" id="blockContainer">
-                        <div className="grid-content no-overflow medium-offset-2 medium-8 large-offset-3 large-6 small-12">
-                            <ul
-                                style={{
-                                    listStyleType: "none",
-                                    marginLeft: "0",
-                                    marginTop: "50px"
-                                }}
-                            >
-                                <li style={{height: "70px"}}>
-                                    <span>{blockHeight}</span>
-                                    <form
-                                        onSubmit={this.handleSubmit}
-                                        className="float-right"
-                                        style={{display: "flex"}}
+            <section className="cwd-common__wrap">
+                <div className="block-browser">
+
+                    {/* TITLE */}
+                    <div className="block-browser__header">
+                        <span className="cwd-common__title">
+                            <Translate content="explorer.block.title" />
+                            &nbsp;
+                            <span>#{height}</span>
+                        </span>
+                    </div>
+
+                    {/* BLOCK INFO */}
+                    <div className="block-browser__info-wrap">
+                        <div className="block-browser__info-row block-browser__info-row--hash">
+                            <span className="block-browser__info-text">
+                                <Translate
+                                    component="span"
+                                    content="explorer.block.id"
+                                />&#58;
+                            </span>
+
+                            <div className="block-browser__alert-wrap">
+                                <span
+                                    className="block-browser__info-data block-browser__info-data--copy-hash" onClick={this.copyBlockHash.bind(this)}
+                                    ref="currentBlockHash"
                                     >
-                                        <span style={{marginRight: "10px"}}>
-                                            <Translate
-                                                component="span"
-                                                content="explorer.block.go_block"
-                                            />
-                                        </span>
-                                        <div style={{display: "flex"}}>
-                                            <input
-                                                data-field-name={"page"}
-                                                onChange={this.handleChange}
-                                                value={page}
-                                                type="text"
-                                                size="10"
-                                                placeholder=" №"
-                                                style={{
-                                                    display: "flex",
-                                                    border: "none",
-                                                    borderRadius: "40px",
-                                                    width: "100px"
-                                                }}
-                                            />
-                                            <button
-                                                style={{
-                                                    color: "#1B1B1B",
-                                                    backgroundColor: "#DDDDDD",
-                                                    borderRadius: "5px"
-                                                }}
-                                            >
-                                                <Translate
-                                                    component="span"
-                                                    content="explorer.block.input"
-                                                />
-                                            </button>
-                                        </div>
-                                    </form>
-                                </li>
-                                <li>
+                                    {block ? blockID : null}
+                                </span>
+
+                                {showAlert ?
                                     <Translate
-                                        component="span"
-                                        content="explorer.block.date"
-                                    />
-                                    :{" "}
-                                    {block ? (
-                                        <div className="float-right">
-                                            <FormattedDate
-                                                value={block.timestamp}
-                                                format="full"
-                                            />
-                                        </div>
-                                    ) : null}
-                                </li>
-                                <li>
-                                    <Translate
-                                        component="span"
-                                        content="explorer.block.witness"
-                                    />
-                                    :{" "}
-                                    {block ? (
-                                        <div className="float-right">
-                                            <LinkToWitnessById
-                                                witness={block.witness}
-                                            />
-                                        </div>
-                                    ) : null}
-                                </li>
-                                <li>
-                                    <Translate
-                                        component="span"
-                                        content="explorer.block.previous"
-                                    />
-                                    :{" "}
-                                    {block ? (
-                                        <div className="float-right">
-                                            {block.previous}
-                                        </div>
-                                    ) : null}
-                                </li>
-                                <li>
-                                    <Translate
-                                        component="span"
-                                        content="explorer.block.transactions"
-                                    />
-                                    :{" "}
-                                    {block ? (
-                                        <div className="float-right">
-                                            {block.transactions.length}
-                                        </div>
-                                    ) : null}
-                                </li>
-                            </ul>
-                            <div
-                                className="clearfix"
-                                style={{marginBottom: "1rem"}}
-                            >
-                                <div
-                                    className="button float-left outline"
-                                    onClick={this._previousBlock.bind(this)}
-                                >
-                                    <Translate
-                                        component="span"
-                                        content="pagination.page-prew"
-                                    />
-                                </div>
-                                <div
-                                    className="button float-right outline"
-                                    onClick={this._nextBlock.bind(this)}
-                                >
-                                    <Translate
-                                        component="span"
-                                        content="pagination.page-next"
-                                    />
-                                </div>
+                                        className="block-browser__alert"
+                                        content="address_book.contacs_list.link_copied" />
+                                    : null}
                             </div>
-                            {block ? <TransactionList block={block} /> : null}
-                            {/* <div
-                                style={{textAlign: "center", marginBottom: 20}}
-                            >
-                                <a onClick={this.scrollToTop}>
-                                    <Translate content="global.return_to_top" />
-                                </a>
-                            </div> */}
+                        </div>
+
+                        <div className="block-browser__info-row">
+                            <span className="block-browser__info-text">
+                                <Translate
+                                    component="span"
+                                    content="explorer.block.date"
+                                />&#58;
+                            </span>
+
+                            <span className="block-browser__info-data">
+                                {block ?
+                                    <FormattedDate
+                                        value={block.timestamp}
+                                        format="full"
+                                    />
+                                    : null}
+                            </span>
+                        </div>
+
+                        <div className="block-browser__info-row">
+                            <span className="block-browser__info-text">
+                                <Translate
+                                    component="span"
+                                    content="explorer.block.witness"
+                                />&#58;
+                            </span>
+
+                            <span className="block-browser__info-data">
+                                {block ?
+                                    <LinkToWitnessById
+                                        witness={block.witness}
+                                    />
+                                    : null}
+                            </span>
+                        </div>
+
+                        <div className="block-browser__info-row block-browser__info-row--hash">
+                            <span className="block-browser__info-text">
+                                <Translate
+                                    component="span"
+                                    content="explorer.block.previous"
+                                />
+                            </span>
+
+                            <span className="block-browser__info-data">
+                                {block ? block.previous : null}
+                            </span>
+                        </div>
+
+                        <div className="block-browser__info-row">
+                            <span className="block-browser__info-text">
+                                <Translate
+                                    component="span"
+                                    content="explorer.block.transactions"
+                                />
+                            </span>
+
+                            <span className="block-browser__info-data">
+                                {block ?
+                                    block.transactions.length
+                                    : null}
+                            </span>
                         </div>
                     </div>
+
+                    <div className="block-browser__btn-container">
+
+                        {/* PAGINATION */}
+                        <div className="block-browser__pagination-wrap">
+                            <button
+                                type="button"
+                                className="cwd-btn__action-btn noselect"
+                                onClick={this._previousBlock.bind(this)}
+                            >
+
+                                <NewIcon
+                                    iconWidth={16}
+                                    iconHeight={13}
+                                    iconClass="block-browser__prew-btn"
+                                    iconName={"link_btn_arrow"}
+                                />
+                                <Translate content="pagination.page-prew" />
+                            </button>
+
+                            <button
+                                type="button"
+                                className="cwd-btn__action-btn noselect"
+                                onClick={this._nextBlock.bind(this)}
+                            >
+                                <Translate content="pagination.page-next" />
+
+                                <NewIcon
+                                    iconWidth={16}
+                                    iconHeight={13}
+                                    iconName={"link_btn_arrow"}
+                                />
+                            </button>
+                        </div>
+
+                        {/* GO TO BLOCK */}
+                        <div className="block-browser__searching-wrap">
+                            <div className="block-browser__searching-inner">
+                                <input
+                                    className="cwd-common__input"
+                                    type="text"
+                                    ref="blockInput"
+                                    onKeyDown={this._onKeyDown.bind(this)}
+                                    placeholder={counterpart.translate("explorer.block.go_to")}
+                                />
+
+                                <button
+                                    type="button"
+                                    className="cwd-btn__action-btn block-browser__btn noselect"
+                                    onClick={this.goToBlock.bind(this)}
+                                >
+                                    <Translate content="explorer.block.go_to_btn" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* BLOCK TRX */}
+                    {block && block.transactions.length > 0 ?
+                        <TransactionList block={block} /> :
+                        <Translate content="explorer.block.no_trx" />
+                    }
                 </div>
-            </div>
+            </section>
         );
     }
 }

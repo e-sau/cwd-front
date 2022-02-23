@@ -28,6 +28,7 @@ class BlockTime extends React.Component {
             BlockchainActions.getHeader.defer(this.props.block_number);
         }
     }
+    
 
     shouldComponentUpdate(next_props) {
         return (
@@ -37,6 +38,9 @@ class BlockTime extends React.Component {
     }
 
     render() {
+        if (!this.props.blockHeader) {
+            BlockchainActions.getHeader.defer(this.props.block_number);
+        }
         return (
             <span className="time" key={this.props.block_number}>
                 {this.props.blockHeader ? (
@@ -48,7 +52,7 @@ class BlockTime extends React.Component {
                     ) : (
                         <TimeAgo time={this.props.blockHeader.timestamp} />
                     )
-                ) : null}
+                ) : null }
             </span>
         );
     }

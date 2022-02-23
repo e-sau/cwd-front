@@ -16,7 +16,6 @@ import InitError from "./components/InitError";
 import SyncError from "./components/SyncError/SyncError";
 import counterpart from "counterpart";
 import LogsActions from "actions/LogsActions";
-import SettingsActions from "actions/SettingsActions";
 
 /*
  * Electron does not support browserHistory, so we need to use hashHistory.

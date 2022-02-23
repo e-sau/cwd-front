@@ -62,7 +62,7 @@
             "suspected_scammer": "Có vẻ đây là một người lừa đảo",
             "upgrade_lifetime": "Mua Đăng ký trọn đời",
             "basic": "Người dùng thông thường",
-            "annual": "Thành viên đăng ký theo năm"
+            "annual": "Dịch vụ tài khoản"
         },
         "mine": "Tài khoản của tôi",
         "name": "Tên tài khoản",
@@ -959,19 +959,20 @@
             "user": "Tài sản do người dùng tự tạo"
         },
         "block": {
+            "title": "Xem khối",
             "account_upgrade": "Tài khoản nâng cấp",
             "asset_issue": "Số lượng phát hành",
             "asset_update": "Tài sản có thể cập nhật",
             "authorizing_account": "Tài khoản được ủy quyền",
             "call_limit": "Giới hạn yêu cầu",
             "common_options": "Thông số chung",
-            "count": "Transactiony",
+            "id": "Block ID",
             "date": "Ngày",
+            "count": "Transactiony",
+            "witness": "Người làm chứng",
             "fee_payer": "Tài khoản để thanh toán hoa hồng",
             "feed_price": "Giá theo báo giá",
-            "go_block": "Chuyển sang khối",
             "go_to": "Chuyển sang khối",
-            "id": "Block ID",
             "input": "Đầu vào",
             "key": "Public key",
             "lifetime": "Nâng cấp một dịch vụ tài khoản",
@@ -982,11 +983,10 @@
             "new_producers": "Đơn vị cung cấp báo giá mới",
             "op": "Giao dịch",
             "op_type": "Loại giao dịch",
-            "previous": "Trước",
+            "previous": "Trước:",
             "settlement_price": "Giá thanh toán",
-            "title": "Khối",
-            "transactions": "Số lượng giao dịch",
-            "witness": "Người làm chứng"
+            "transactions": "Số lượng giao dịch:",
+            "no_trx": "Không có giao dịch trong khu nhà khối này"
         },
         "blocks": {
             "active_committee_members": "Thành viên hội đồng tích cực",
@@ -1004,8 +1004,12 @@
             "trx": "Giao dịch",
             "trx_per_block": "Giao dịch/khối",
             "trx_per_sec": "Giao dịch/giây",
-            "recent_ops_header": "Hoạt động phổ biến lịch sử",
-            "recent_ops": "Gần đây tìm giao dịch"
+            "recent_ops": "Gần Đây Tìm Giao Dịch",
+            "block_hash_title": "Tìm kiếm bằng Khối ID hoặc TxID",
+            "enter_hash": "nhập băm",
+            "tab_title_01": "Blockchain",
+            "tab_title_02": "Hoạt động phổ biến lịch sử",
+            "tab_title_03": "Cuối cùng khối"
         },
         "committee_member": {
             "title": "Thành viên hội đồng"
@@ -1087,7 +1091,7 @@
         "contacts-text": "Để liên hệ với người bán, vui lòng ghi rõ thông tin liên lạc của bạn (email, điện thoại, địa chỉ giao hàng)",
         "contacts-title": "Thông tin liên lạc",
         "custom-bet": "Giá đặt cược tùy thích",
-        "date-time": "Ngày và giờ đặt cược",
+        "date-time": "Thời gian của đặt cược",
         "enter-amount": "Giá đặt cược của bạn",
         "game_dices": "Dices",
         "game_heads": "Đầu, Đuôi",
@@ -1626,7 +1630,7 @@
     },
     "send_message": {
         "account_text": "Tài khoản:",
-        "message_text": "Nội dung tin nhắn:",
+        "message_title": "Tin nhắn cho %(toAccountName)s",
         "send_btn": "Gửi tin nhắn",
         "message_btn": "Viết tin nhắn"
     },

@@ -15,7 +15,6 @@ let iconsCommon = [
     "copy",
     "accounts",
     "download2",
-    "add_account",
     "explorer",
     "logo",
     "adjust",
@@ -97,7 +96,6 @@ let iconsCommon = [
     "ambassador-icon",
     "exchange2",
     "gateway_dex",
-    "gateway_btc",
     "committee_members",
     "btn_arrow",
     "show_more_arrow",
@@ -120,7 +118,13 @@ let iconsCommon = [
     "icon_minus",
     "btn_add",
     "favourite",
-    "remove_cross"
+    "remove_cross",
+    "edit_icon",
+    "export_icon",
+    "import_icon",
+    "message_icon",
+    "send_modal_icon",
+    "selector_arrow"
 ];
 
 let categories = {
@@ -139,7 +143,8 @@ let categories = {
         "permissions",
         "settings",
         "assets",
-        "great_race"
+        "great_race",
+        "address_book"
     ],
     dex: [
         "arrow_down",
@@ -174,7 +179,20 @@ let categories = {
         "icon_outcome",
         "icon_prize"
     ],
-    explorer: ["witneses", "cwd_volume"],
+    explorer: [
+        "average_block_time",
+        "committee_members",
+        "current_block",
+        "cwd_amount",
+        "last_block",
+        "missed_blocks",
+        "tab_explorer",
+        "tab_last_blocks",
+        "tab_op_history",
+        "trx_block",
+        "trx_sec",
+        "witnesses",
+    ],
     "drop-menu": ["white_list", "permissions", "settings"],
     header: [
         "breadcrumbs_arrow",
@@ -202,7 +220,8 @@ let categories = {
         "node-inactive",
         "node-show"
     ],
-    "great-race": ["team_members", "icon_captain"]
+    "great-race": ["team_members", "icon_captain"],
+    "address-book": ["dex_icon", "message_icon", "transfer_icon", "close_icon"]
 };
 
 let iconsMap = {};

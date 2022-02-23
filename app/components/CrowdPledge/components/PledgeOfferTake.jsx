@@ -54,7 +54,7 @@ class PledgeOfferTake extends React.Component {
                             pledge_offer
                         );
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 this.givePledgeOffer(
                     account,
@@ -99,23 +99,33 @@ class PledgeOfferTake extends React.Component {
         );
     }
 
+    onNavigate(item, e) {
+        e.preventDefault();
+
+        let itemId = item;
+        let idSplit = itemId.split(".");
+        let urlId = idSplit[2];
+
+        this.props.history.push(`/pledge-offer/item-${urlId}`);
+    };
+
     render() {
         let pledgeItem = this.state.takeOffers;
 
         return (
             <li className="pledge-offer__item">
+                {/* PLEDGE ID  */}
+                <span 
+                className="pledge-offer__item-id"
+                    onClick={this.onNavigate.bind(
+                        this,
+                        pledgeItem["id"]
+                    )}>
+                    #{pledgeItem["id"]}
+                </span>
+
                 <div className="pledge-offer__wrap">
                     <div className="pledge-offer__inner">
-                        <div className="pledge-offer__row">
-                            <Translate
-                                className="pledge-offer__text"
-                                content="crowd_pledge.pledge_id"
-                            />
-                            <span className="pledge-offer__text pledge-offer__text--data pledge-offer__text--price">
-                                {pledgeItem["id"]}
-                            </span>
-                        </div>
-
                         <div className="pledge-offer__row">
                             <Translate
                                 className="pledge-offer__text"

@@ -5,7 +5,7 @@ import WalletDb from "stores/WalletDb";
 import WalletUnlockActions from "actions/WalletUnlockActions";
 import AccountActions from "actions/AccountActions";
 import FormattedAsset from "../../Utility/FormattedAsset";
-import {FormattedDate} from "react-intl";
+import { FormattedDate } from "react-intl";
 
 //STYLES
 import "../scss/pledge-form.scss";
@@ -23,10 +23,10 @@ class MyCurrentPledgeOffers extends React.Component {
     }
 
     componentDidUpdate(nextProps) {
-        const {pledgeItem} = this.props;
+        const { pledgeItem } = this.props;
         if (nextProps.pledgeItem !== pledgeItem) {
             if (pledgeItem) {
-                this.setState({pledgeItem: nextProps.pledgeItem});
+                this.setState({ pledgeItem: nextProps.pledgeItem });
             }
         }
     }
@@ -57,7 +57,7 @@ class MyCurrentPledgeOffers extends React.Component {
                             pledge_offer
                         );
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 this.payOffPledgeOffer(
                     debitor,
@@ -101,22 +101,17 @@ class MyCurrentPledgeOffers extends React.Component {
             : counterpart.translate("crowd_pledge.exchange.type_give_header");
 
         return (
-            <li className="pledge-offer__item">
+            <li className="pledge-offer__item pledge-offer__item--static">
+                {/* PLEDGE ID  */}
+                <span className="pledge-offer__item-id">
+                    #{pledgeItem["id"]}
+                </span>
+
                 <div className="pledge-offer__wrap">
                     <div className="pledge-offer__inner">
                         <span className="pledge-offer__name">
                             {pledgeTypeHeader}
                         </span>
-
-                        <div className="pledge-offer__row">
-                            <Translate
-                                className="pledge-offer__text"
-                                content="crowd_pledge.pledge_id"
-                            />
-                            <span className="pledge-offer__text pledge-offer__text--data pledge-offer__text--price">
-                                {pledgeItem["id"]}
-                            </span>
-                        </div>
 
                         <div className="pledge-offer__row">
                             <Translate

@@ -31,7 +31,7 @@ class LinkToAccountById extends React.Component {
         const maxDisplayAccountNameLength = 20;
 
         return this.props.noLink ? (
-            <span>
+            <span className="cwd-common__account-name">
                 {account_name.substr(0, maxDisplayAccountNameLength)}
                 {account_name.length > maxDisplayAccountNameLength
                     ? "..."
@@ -41,7 +41,7 @@ class LinkToAccountById extends React.Component {
             <Link
                 onClick={this.props.onClick ? this.props.onClick : () => {}}
                 to={`/profile/${account_name}`}
-                className="blockchain__link"
+                className="cwd-common__link"
             >
                 {account_name.substr(0, maxDisplayAccountNameLength)}
                 {account_name.length > maxDisplayAccountNameLength

@@ -72,7 +72,7 @@ const Asset = Loadable({
     loading: LoadingIndicator
 });
 
-const Block = Loadable({
+const BlockContainer = Loadable({
     loader: () =>
         import(
             /* webpackChunkName: "block" */ "./components/Blockchain/BlockContainer"
@@ -140,13 +140,13 @@ const GameMatrixDev = Loadable({
 
 /* CrowdMarket */
 
-const CrowdMarket = Loadable({
-    loader: () =>
-        import(
-            /* webpackChunkName: "crowdmarket" */ "./components/CrowdMarket/CrowdMarket"
-        ),
-    loading: LoadingIndicator
-});
+// const CrowdMarket = Loadable({
+//     loader: () =>
+//         import(
+//             /* webpackChunkName: "crowdmarket" */ "./components/CrowdMarket/CrowdMarket"
+//         ),
+//     loading: LoadingIndicator
+// });
 
 /*FinanceDashboard*/
 const FinanceDashboard = Loadable({
@@ -162,6 +162,15 @@ const CrowdGateway = Loadable({
     loader: () =>
         import(
             /* webpackChunkName: "CrowdGatewayDEC" */ "./components/CrowdGateway/CrowdGateway"
+        ),
+    loading: LoadingIndicator
+});
+
+/*SingleTradeItem Decentralized*/
+const SingleTradeItem = Loadable({
+    loader: () =>
+        import(
+            /* webpackChunkName: "SingleTradeItem" */ "./components/CrowdGateway/components/SingleTradeItem"
         ),
     loading: LoadingIndicator
 });
@@ -198,6 +207,15 @@ const CrowdPledge = Loadable({
     loader: () =>
         import(
             /* webpackChunkName: "CrowdPledge" */ "./components/CrowdPledge/CrowdPledgeIndex"
+        ),
+    loading: LoadingIndicator
+});
+
+/*CrowdPledge*/
+const SingleCrowdPledgeItem = Loadable({
+    loader: () =>
+        import(
+            /* webpackChunkName: "SingleCrowdPledgeItem" */ "./components/CrowdPledge/components/SingleCrowdPledgeItem"
         ),
     loading: LoadingIndicator
 });
@@ -247,6 +265,22 @@ const ContractOverview = Loadable({
     loader: () =>
         import(
             /* webpackChunkName: "ContractOverview" */ "./components/CotractOverview/ContractOverview"
+        ),
+    loading: LoadingIndicator
+});
+
+const AddressBook = Loadable({
+    loader: () =>
+        import(
+            /* webpackChunkName: "AddressBook" */ "./components/AddressBook/AddressBook"
+        ),
+    loading: LoadingIndicator
+});
+
+const AccountVoting = Loadable({
+    loader: () =>
+        import(
+            /* webpackChunkName: "AccountVoting" */ "./components/Account/AccountVoting"
         ),
     loading: LoadingIndicator
 });
@@ -476,7 +510,7 @@ class App extends React.Component {
         let { walletMode, theme, location, match, ...others } = this.props;
         let content = null;
 
-        let depricatedAssets = ["ALTER", "SILVER", "CARBON", "INDEX.CWD", "MULTICS", "CROWD.BTC"];
+        let depricatedAssets = ["ALTER", "SILVER", "CARBON", "INDEX.CWD", "MULTICS", "CROWD.BTC", "GUARD"];
         let tradeUrl = window.location.href;
 
         let isDepricated = false;
@@ -602,15 +636,24 @@ class App extends React.Component {
                                                 path="/settings"
                                                 component={AppSettings}
                                             />
-                                            <Redirect
-                                                path={"/voting"}
-                                                to={{
-                                                    pathname: `/account/${accountName}/voting`
-                                                }}
+                                            <Route
+                                                path={`/account/${accountName}/voting`}
+                                                component={AccountVoting}
                                             />
                                             <Route
+                                                exact
                                                 path="/explorer"
                                                 component={BlocksContainer}
+                                            />
+                                            <Route
+                                                exact
+                                                path="/block/:height"
+                                                component={BlockContainer}
+                                            />
+                                            <Route
+                                                exact
+                                                path="/hash/:height"
+                                                component={BlockContainer}
                                             />
                                             <Route
                                                 path="/witnesses"
@@ -619,16 +662,6 @@ class App extends React.Component {
                                             <Route
                                                 path="/asset/:symbol"
                                                 component={Asset}
-                                            />
-                                            <Route
-                                                exact
-                                                path="/block/:height"
-                                                component={Block}
-                                            />
-                                            <Route
-                                                exact
-                                                path="/block/:height/:txIndex"
-                                                component={Block}
                                             />
                                             {/* TODO SmartCoins */}
                                             {/* <Route
@@ -672,11 +705,11 @@ class App extends React.Component {
                                                 path="/gamezone/matrix-game-dev/:account_name"
                                                 component={GameMatrixDev}
                                             />
-                                            <Route
+                                            {/* <Route
                                                 exact
                                                 path="/crowdmarket"
                                                 component={CrowdMarket}
-                                            />
+                                            /> */}
                                             <Route
                                                 exact
                                                 path="/finance-dashboard"
@@ -687,6 +720,12 @@ class App extends React.Component {
                                                 exact
                                                 path="/gateway/dex"
                                                 component={CrowdGateway}
+                                            />
+                                            <Route
+                                                exact
+                                                path="/gateway/dex/:dexItemId"
+                                                history={this.props.history}
+                                                component={SingleTradeItem}
                                             />
                                             <Route
                                                 exact
@@ -705,6 +744,12 @@ class App extends React.Component {
                                                 path="/pledge-offer"
                                                 component={CrowdPledge}
                                                 history={this.props.history}
+                                            />
+                                            <Route
+                                                exact
+                                                path="/pledge-offer/:pledgeItemId"
+                                                history={this.props.history}
+                                                component={SingleCrowdPledgeItem}
                                             />
                                             <Route
                                                 exact
@@ -734,6 +779,12 @@ class App extends React.Component {
                                                 exact
                                                 path="/contracts-overview"
                                                 component={ContractOverview}
+                                                history={this.props.history}
+                                            />
+                                            <Route
+                                                exact
+                                                path="/address-book"
+                                                component={AddressBook}
                                                 history={this.props.history}
                                             />
                                             <Route

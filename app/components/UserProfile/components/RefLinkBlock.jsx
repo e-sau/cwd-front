@@ -50,7 +50,6 @@ class RefLinkBlock extends React.Component {
                             iconWidth={20}
                             iconHeight={20}
                             iconName={"icon_copy"}
-
                         />
                     </span>
                     {this.state.showClipboardAlert ? (

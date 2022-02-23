@@ -6,8 +6,8 @@ import WalletUnlockActions from "actions/WalletUnlockActions";
 import AccountActions from "actions/AccountActions";
 import LinkToAccountById from "../../Utility/LinkToAccountById";
 import counterpart from "counterpart";
-import {Apis} from "bitsharesjs-ws";
-import {ChainStore} from "bitsharesjs";
+import { Apis } from "bitsharesjs-ws";
+import { ChainStore } from "bitsharesjs";
 
 //STYLES
 import "../scss/cwdgateway-active.scss";
@@ -127,7 +127,7 @@ class TradeItemSell extends React.Component {
                             details
                         );
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 this.sellAsset(
                     tradeID,
@@ -198,6 +198,16 @@ class TradeItemSell extends React.Component {
         }
     }
 
+    onNavigate(item, e){
+        e.preventDefault();
+
+        let itemId = item;
+        let idSplit = itemId.split(".");
+        let urlId = idSplit[2];
+
+        this.props.history.push(`/gateway/dex/item-${urlId}`);
+    };
+
     render() {
         let activeItem = this.state.sellAds.pa;
         let showModal = this.state.showModal;
@@ -207,6 +217,7 @@ class TradeItemSell extends React.Component {
         let advType = activeItem["adv_type"]
             ? counterpart.translate("cwdgateway.exchange.type_sell")
             : counterpart.translate("cwdgateway.exchange.type_buy");
+            
         let price = parseFloat(activeItem["price"] / 100000000)
             .toFixed(8)
             .toString()
@@ -224,6 +235,18 @@ class TradeItemSell extends React.Component {
             <li className="cwdgateway-active__item">
                 <div className="cwdgateway-active__wrap">
                     <div className="cwdgateway-active__inner">
+                        {/* DEX ID  */}
+                        <span
+                            className="cwdgateway-active__item-id"
+                            onClick={this.onNavigate.bind(
+                                this,
+                                activeItem["id"]
+                            )}
+                        >
+                            #{activeItem["id"]}
+                        </span>
+
+                        {/* DEX TYPE */}
                         <span className="cwdgateway-active__name">
                             {advType}
                         </span>
@@ -250,7 +273,7 @@ class TradeItemSell extends React.Component {
                                 </span>
                             ) : (
                                 <span className="cwdgateway-active__text cwdgateway-active__text--data">
-                                    {minCwdLimit} - {Math.floor(maxCwdLimit)}
+                                    {minCwdLimit}&nbsp;-&nbsp;{Math.floor(maxCwdLimit)}
                                     &nbsp;CWD
                                 </span>
                             )}

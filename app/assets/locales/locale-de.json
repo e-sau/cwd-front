@@ -62,7 +62,7 @@
             "suspected_scammer": "Möglicherweise ein Betrüger",
             "upgrade_lifetime": "Lebenslanges Abo kaufen",
             "basic": "Gewöhnlicher Nutzer",
-            "annual": "Jahresabonnent"
+            "annual": "Dienstkonto"
         },
         "mine": "Mein Konto",
         "name": "Kontoname",
@@ -958,19 +958,20 @@
             "user": "Vom Nutzer emittierte Assets"
         },
         "block": {
+            "title": "Block anzeigen",
             "account_upgrade": "Verbesserbares Konto",
             "asset_issue": "Zu emittierende Menge",
             "asset_update": "Aktualisierbares Asset",
             "authorizing_account": "Autorisiertes Konto",
             "call_limit": "Abfragelimit",
             "common_options": "Allgemeine Einstellungen",
-            "count": "Transaktion",
+            "id": "Block-ID",
             "date": "Datum",
+            "count": "Transaktion",
+            "witness": "Sicherheitengeber",
             "fee_payer": "Provisionskonto",
             "feed_price": "Preis laut Kotierung",
-            "go_block": "Weiter zum Block",
-            "go_to": "Weiter zum Block",
-            "id": "Block-ID",
+            "go_to": "weiter zum Block",
             "input": "Eingabe",
             "key": "Öffentlicher Schlüssel",
             "lifetime": "Upgrade auf ein Dienstkonto",
@@ -981,11 +982,10 @@
             "new_producers": "Neue Kotierungserzeuger",
             "op": "Operation",
             "op_type": "Typ der Operation",
-            "previous": "Voriger",
+            "previous": "Voriger:",
             "settlement_price": "Kalkulationspreis",
-            "title": "Block",
-            "transactions": "Anzahl der Transaktionen",
-            "witness": "Sicherheitengeber"
+            "transactions": "Anzahl der Transaktionen:",
+            "no_trx": "Keine Transaktionen in diesem Block"
         },
         "blocks": {
             "active_committee_members": "Aktive Komitee-Mitglieder",
@@ -1003,8 +1003,12 @@
             "trx": "Transaktion",
             "trx_per_block": "Transaktionen/Block",
             "trx_per_sec": "Transaktionen/Sek",
-            "recent_ops_header": "Allgemeine Geschichte der Operationen",
-            "recent_ops": "Die jüngsten blockchain-Transaktionen"
+            "recent_ops": "Jüngste Operationen in der Blockchain",
+            "block_hash_title": "Suche nach Block-ID oder TxID",
+            "enter_hash": "geben Sie den Hash ein",
+            "tab_title_01": "Blockchain",
+            "tab_title_02": "Gemeinsame Operationen Geschichte",
+            "tab_title_03": "Letzte Blöcke"
         },
         "committee_member": {
             "title": "Komitee-Mitglied"
@@ -1086,7 +1090,7 @@
         "contacts-text": "Zur Kontaktaufnahme mit dem Verkäufer geben Sie Ihre Kontaktdaten an (E-Mail, Telefon, Lieferadresse)",
         "contacts-title": "Kontaktdaten",
         "custom-bet": "Beliebiger Einsatz",
-        "date-time": "Datum und Zeit des Einsatzes",
+        "date-time": "Zeit des Einsatzes",
         "enter-amount": "Ihr Einsatz",
         "game_dices": "Würfeln",
         "game_heads": "Kopf oder Zahl",
@@ -1625,7 +1629,7 @@
     },
     "send_message": {
         "account_text": "Konto:",
-        "message_text": "Text der Mitteilung:",
+        "message_title": "Nachricht für %(toAccountName)s",
         "send_btn": "Mitteilung senden",
         "message_btn": "Mitteilung schreiben"
     },

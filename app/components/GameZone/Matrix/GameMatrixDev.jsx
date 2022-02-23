@@ -14,7 +14,7 @@ import MatrixData from "./components/MatrixData";
 import MatrixBalances from "./components/MatrixBalances";
 import ReferralInfo from "./components/ReferralInfo";
 import RoomsBlock from "./components/RoomsBlock";
-import BlockTimeAgo from "../../Explorer/Blocks";
+
 
 //STYLES
 import "./scss/matrix-game.scss";

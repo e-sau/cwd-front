@@ -87,6 +87,7 @@ class ActivePledgeOffersList extends React.Component {
                                         key={pledgeItem["id"]}
                                         giveOffers={pledgeItem}
                                         currentAccount={currentAccount}
+                                        history={this.props.history}
                                     />
                                 ))}
                             </ul>
@@ -106,6 +107,7 @@ class ActivePledgeOffersList extends React.Component {
                                         key={pledgeItem["id"]}
                                         takeOffers={pledgeItem}
                                         currentAccount={currentAccount}
+                                        history={this.props.history}
                                     />
                                 ))}
                             </ul>

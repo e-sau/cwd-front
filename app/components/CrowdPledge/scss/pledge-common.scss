@@ -76,6 +76,18 @@
             }
         }
     }
+    
+    &__back-link {
+        display: block;
+        margin-bottom: 20px;
+        & span {
+            padding: 0;
+            color: #e1c697 !important;
+            text-transform: lowercase;
+            text-decoration: underline;
+        }
+    }
+
     &__hist-wrap {
         .operations__no-recent {
             padding-top: 0;
@@ -86,6 +98,43 @@
         .operations--short-view {
             grid-template-columns: 250px 500px 160px;
         }
+    }
+
+    &__copy-btn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 300px;
+        margin-top: 20px;
+        outline: none;
+        cursor: pointer;
+        & span {
+            color: #f2cb96;
+            font-size: 14px;
+        }
+
+        .new-icon {
+            margin-left: 7px;
+        }
+    }
+
+    &__alert {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        bottom: 23px;
+        left: 0;
+        width: 100%;
+        background: #212121;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        color: #03d99d;
+        font-size: 14px;
+        z-index: 100;
+        animation-name: fadeIn;
+        animation-duration: 1.4s;
     }
 }
 

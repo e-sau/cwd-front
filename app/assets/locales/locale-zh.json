@@ -62,7 +62,7 @@
             "suspected_scammer": "可能是骗人",
             "upgrade_lifetime": "购买终身订阅",
             "basic": "普通用户",
-            "annual": "年度订阅者"
+            "annual": "服务帐户"
         },
         "mine": "我的账户",
         "name": "用户名",
@@ -959,19 +959,20 @@
             "user": "用户发放的资产"
         },
         "block": {
+            "title": "查看区块",
             "account_upgrade": "优化后的账户",
             "asset_issue": "发行数量",
             "asset_update": "可回收资产",
             "authorizing_account": "授权帐号",
             "call_limit": "要求限制",
             "common_options": "常用参数",
-            "count": "交易",
+            "id": "Block ID",
             "date": "日期",
+            "count": "交易",
+            "witness": "证人",
             "fee_payer": "佣金支付账户",
             "feed_price": "报价价格",
-            "go_block": "前往模块",
             "go_to": "前往模块",
-            "id": "模块识别符",
             "input": "输入项",
             "key": "公钥",
             "lifetime": "升级服务帐户",
@@ -982,11 +983,10 @@
             "new_producers": "新报价生产商",
             "op": "交易",
             "op_type": "交易类型",
-            "previous": "上一个",
+            "previous": "上一个:",
             "settlement_price": "预估价格",
-            "title": "模块",
-            "transactions": "交易数量",
-            "witness": "证人"
+            "transactions": "交易数量:",
+            "no_trx": "此区块中没有交易"
         },
         "blocks": {
             "active_committee_members": "委员会活跃成员",
@@ -1004,8 +1004,12 @@
             "trx": "交易",
             "trx_per_block": "交易/模块",
             "trx_per_sec": "交易/秒",
-            "recent_ops_header": "常见操作历史记录",
-            "recent_ops": "最近的区块链交易"
+            "recent_ops": "最近的区块链交易",
+            "block_hash_title": "按块ID或TxID搜索",
+            "enter_hash": "输入哈希值",
+            "tab_title_01": "区块链",
+            "tab_title_02": "常见操作历史",
+            "tab_title_03": "最后一个街区"
         },
         "committee_member": {
             "title": "委员会成员"
@@ -1087,7 +1091,7 @@
         "contacts-text": "要联系卖家，请输入您的联系方式（电子邮件，电话，收货地址）",
         "contacts-title": "联系方式",
         "custom-bet": "任意下注",
-        "date-time": "下注日期和时间",
+        "date-time": "投注时间",
         "enter-amount": "您的下注",
         "game_dices": "骰子",
         "game_heads": "正面或反面",
@@ -1626,7 +1630,7 @@
     },
     "send_message": {
         "account_text": "账号：",
-        "message_text": "消息文本：",
+        "message_title": "信息 %(toAccountName)s",
         "send_btn": "发送消息",
         "message_btn": "写消息"
     },

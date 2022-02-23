@@ -134,7 +134,7 @@ class WebsocketAddModal extends React.Component {
                 <div className="grid-content">
                     <Form layout="vertical">
                         <Form.Item
-                            label={counterpart.translate("modal.socket_name")}
+                            label={counterpart.translate("settings.socket_name")}
                         >
                             <Input
                                 onChange={this.onNameInput.bind(this)}
@@ -143,7 +143,7 @@ class WebsocketAddModal extends React.Component {
                         </Form.Item>
 
                         <Form.Item
-                            label={counterpart.translate("modal.address")}
+                            label={counterpart.translate("settings.socket_name_placeholder")}
                             validateStatus={validateStatus}
                             help={help}
                         >

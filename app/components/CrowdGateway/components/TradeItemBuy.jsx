@@ -78,7 +78,7 @@ class TradeItemBuy extends React.Component {
                             amount
                         );
                     })
-                    .catch(() => {});
+                    .catch(() => { });
             } else {
                 this.buyAsset(
                     tradeID,
@@ -135,21 +135,33 @@ class TradeItemBuy extends React.Component {
         }
     }
 
+
+    onNavigate(item, e) {
+        e.preventDefault();
+
+        let itemId = item;
+        let idSplit = itemId.split(".");
+        let urlId = idSplit[2];
+
+        this.props.history.push(`/gateway/dex/item-${urlId}`);
+    };
+
     render() {
-        let activeItem = this.state.buyAds.pa;        
+        let activeItem = this.state.buyAds.pa;
         let rating = this.state.buyAds.rating;
         let volume = this.state.buyAds.volume / 100000;
         let showModal = this.state.showModal;
+
         let advType = activeItem["adv_type"]
             ? counterpart.translate("cwdgateway.exchange.type_sell")
             : counterpart.translate("cwdgateway.exchange.type_buy");
+
         let price = parseFloat(activeItem["price"] / 100000000)
             .toFixed(8)
             .toString()
             .replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, "$1");
 
         let isTop = this.props.isTop;
-
         let exRate = parseFloat(activeItem["price"] / 100000000);
         let totalSumm = this.state.totalSumm;
 
@@ -157,6 +169,17 @@ class TradeItemBuy extends React.Component {
             <li className="cwdgateway-active__item">
                 <div className="cwdgateway-active__wrap">
                     <div className="cwdgateway-active__inner">
+                        {/* DEX ID  */}
+                        <span
+                            className="cwdgateway-active__item-id"
+                            onClick={this.onNavigate.bind(
+                                this,
+                                activeItem["id"]
+                            )}>
+                            #{activeItem["id"]}
+                        </span>
+
+                        {/* DEX TYPE */}
                         <span className="cwdgateway-active__name">
                             {advType}
                         </span>
@@ -170,7 +193,7 @@ class TradeItemBuy extends React.Component {
                                 content="cwdgateway.quantity"
                             />
                             <span className="cwdgateway-active__text cwdgateway-active__text--data">
-                                {activeItem["min_cwd"] / 100000} -{" "}
+                                {activeItem["min_cwd"] / 100000}&nbsp;-&nbsp;
                                 {Math.floor(activeItem["max_cwd"] / 100000)}
                                 &nbsp;CWD
                             </span>

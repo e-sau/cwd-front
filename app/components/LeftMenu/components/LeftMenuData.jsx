@@ -1,5 +1,13 @@
 export const menuData = [
     {
+        route: "/address-book",
+        iconName: "left-menu_address_book",
+        menuText: "address_book.menu_title",
+        itemID: "leftMenuId_12",
+        currentAccountView: false,
+        isLockedView: true
+    },
+    {
         route: "/great-race",
         iconName: "left-menu_great_race",
         menuText: "great_race.menu_title",
@@ -23,14 +31,14 @@ export const menuData = [
         currentAccountView: true,
         isLockedView: true
     },
-    {
-        route: "/crowdmarket",
-        iconName: "left-menu_crowdmarket",
-        menuText: "crowdmarket.crowdmarket_header",
-        itemID: "leftMenuId_03",
-        currentAccountView: true,
-        isLockedView: true
-    },
+    // {
+    //     route: "/crowdmarket",
+    //     iconName: "left-menu_crowdmarket",
+    //     menuText: "crowdmarket.crowdmarket_header",
+    //     itemID: "leftMenuId_03",
+    //     currentAccountView: true,
+    //     isLockedView: true
+    // },
     {
         route: "/finance-dashboard",
         iconName: "left-menu_finance",
@@ -80,7 +88,7 @@ export const menuData = [
         isLockedView: true
     },
     {
-        route: "/explorer/blocks",
+        route: "/explorer",
         iconName: "left-menu_explorer",
         menuText: "account.explorer",
         itemID: "leftMenuId_10",

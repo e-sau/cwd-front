@@ -144,6 +144,7 @@
         margin-right: 7px !important;
     }
     &__list {
+        max-width: 800px;
         list-style: none;
         margin: 0 !important;
         padding: 0;
@@ -410,7 +411,7 @@
     font-family: "CoreSansE-Light", arial, sans-serif;
 
     svg > path {
-        fill: #a4f93a;
+        fill: #049e51;
     }
 
     svg > g {

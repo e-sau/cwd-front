@@ -222,9 +222,8 @@ class TransactionConfirm extends React.Component {
                 id="transactionConfirm"
             >
                 <Modal
-                    className="cwd-confirm-modal"
+                    className="trx-confirm__modal"
                     wrapClassName="modal--transaction-confirm"
-                    // title={header}
                     visible={!this.props.closed}
                     id="transaction_confirm_modal"
                     ref="modal"
@@ -250,14 +249,7 @@ class TransactionConfirm extends React.Component {
                             />
                         ) : null}
 
-                        <div
-                            className="shrink"
-                            style={{
-                                maxHeight: "60vh",
-                                overflowY: "auto",
-                                overflowX: "hidden"
-                            }}
-                        >
+                        <div className="trx-confirm__body">
                             <Transaction
                                 key={Date.now()}
                                 trx={this.props.transaction.serialize()}

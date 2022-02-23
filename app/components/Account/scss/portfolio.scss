@@ -6,6 +6,7 @@
     &__wrap {
         display: grid;
         grid-template-columns: repeat(3, 286px);
+        align-items: flex-start;
         gap: 35px;
     }
 

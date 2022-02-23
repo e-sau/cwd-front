@@ -1,5 +1,5 @@
 import React from "react";
-import {Tabs, Tab} from "../../Utility/Tabs";
+import { Tabs, Tab } from "../../Utility/Tabs";
 import TradeForm from "./Forms/TradeForm";
 import ActiveTradesWrap from "./ActiveTradesWrap";
 import GatewayOpenTrades from "./GatewayOpenTrades";
@@ -32,7 +32,10 @@ class CreateTradeAd extends React.Component {
 
                     {/* ACTIVE TRADES */}
                     <Tab title="cwdgateway.exchange.active_exchange.title">
-                        <ActiveTradesWrap currentAccount={currentAccount} />
+                        <ActiveTradesWrap
+                            currentAccount={currentAccount}
+                            history={this.props.history}
+                        />
                     </Tab>
 
                     {/* ADD TRADE */}
@@ -42,7 +45,10 @@ class CreateTradeAd extends React.Component {
 
                     {/* ARCHIVE TRADES */}
                     <Tab title="cwdgateway.exchange.archive_trades.title">
-                        <EditArchiveTrade currentAccount={currentAccount} />
+                        <EditArchiveTrade
+                            currentAccount={currentAccount}
+                            history={this.props.history}
+                        />
                     </Tab>
                 </Tabs>
             </div>

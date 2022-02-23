@@ -62,7 +62,7 @@
             "suspected_scammer": "Dolandırıcılık şüphesi",
             "upgrade_lifetime": "Hayat Boyu Üyelik Satın Al",
             "basic": "Temel kullanıcı",
-            "annual": "Yıllık üyelik"
+            "annual": "Hizmet hesabı"
         },
         "mine": "Hesabım",
         "name": "Hesap adı",
@@ -959,19 +959,20 @@
             "user": "Kullanıcı tarafından üretilen varlıklar"
         },
         "block": {
+            "title": "Görünüm bloğu",
             "account_upgrade": "Yükseltilmiş hesaplar",
             "asset_issue": "Emisyona tabi miktar",
             "asset_update": "Yenilenebilir varlık",
             "authorizing_account": "Yetkili hesap",
             "call_limit": "Talep limiti",
             "common_options": "Genel parametreler",
-            "count": "İşlem adeti",
+            "id": "ID blok",
             "date": "Tarih",
+            "count": "İşlem adeti",
+            "witness": "Yetkilendirici",
             "fee_payer": "Komisyon ödeme hesabı",
             "feed_price": "Kotasyon ücreti",
-            "go_block": "Bloka geç",
             "go_to": "Bloka geç",
-            "id": "ID blok",
             "input": "Giriş",
             "key": "Açık anahtar",
             "lifetime": "Bir hizmet hesabına yükseltme",
@@ -982,11 +983,10 @@
             "new_producers": "Yeni kotasyon üreticileri",
             "op": "Operasyon",
             "op_type": "Operasyon türü",
-            "previous": "Önceki",
+            "previous": "Önceki:",
             "settlement_price": "Tahmini fiyat",
-            "title": "Blok",
-            "transactions": "İşlem adeti",
-            "witness": "Yetkilendirici"
+            "transactions": "İşlem adeti:",
+            "no_trx": "Bu blokta işlem yok"
         },
         "blocks": {
             "active_committee_members": "Aktif komite üyeleri",
@@ -1004,8 +1004,12 @@
             "trx": "İşlemler",
             "trx_per_block": "İşlem/blok",
             "trx_per_sec": "İşlem/sn",
-            "recent_ops_header": "Ortak operasyon geçmiş",
-            "recent_ops": "Son blockchain işlemleri"
+            "recent_ops": "Blok zincirindeki son operasyonlar",
+            "block_hash_title": "Blok Kimliğine veya txıd'ye göre ara",
+            "enter_hash": "karmayı girin",
+            "tab_title_01": "Blockchain",
+            "tab_title_02": "Ortak operasyon geçmişi",
+            "tab_title_03": "Son bloklar"
         },
         "committee_member": {
             "title": "Komite üyesi"
@@ -1087,7 +1091,7 @@
         "contacts-text": "Satıcıyla iletişim kurmak için iletişim bilgilerini (e-posta, telefon, teslimat adresi)",
         "contacts-title": "İletişim bilgileri",
         "custom-bet": "Keyfi bahis",
-        "date-time": "Bahis tarihi ve saati",
+        "date-time": "Bahis zamanı",
         "enter-amount": "Bahsiniz",
         "game_dices": "Zarlar",
         "game_heads": "Yazı tura",
@@ -1626,7 +1630,7 @@
     },
     "send_message": {
         "account_text": "Hesap:",
-        "message_text": "İleti metni:",
+        "message_title": "Mesaj için %(toAccountName)s",
         "send_btn": "İletiyi gönder",
         "message_btn": "İleti yaz"
     },

@@ -33,7 +33,7 @@
         color: #ffffff;
         z-index: 100;
 
-        &--negative{
+        &--negative {
             color: #f04124;
         }
     }
@@ -501,70 +501,6 @@
             &:hover {
                 background-color: #b59567 !important;
             }
-        }
-    }
-}
-
-.cwd-confirm-modal {
-    border-radius: 20px;
-    background-color: #2a2a2a;
-    height: hidden;
-    box-shadow: 1.3px 24px 59.3px 19.8px rgba(0, 0, 0, 0.6);
-    z-index: 1500;
-
-    & .ant-modal-content {
-        box-shadow: none !important;
-        top: 18px !important;
-        border-radius: 20px !important;
-
-        & button > span > i > svg {
-            position: absolute !important;
-            top: 0;
-            right: 20px;
-        }
-
-        & div.ant-modal-header {
-            border-bottom: none;
-        }
-
-        & div.ant-modal-footer {
-            border-top: none;
-        }
-
-        & .ant-modal-close-x {
-            color: #fff !important;
-
-            &.ant-modal-close-x :hover {
-                color: #b59567;
-            }
-        }
-
-        &
-            div.ant-modal-body
-            > div
-            > div:nth-child(1)
-            > div
-            > div
-            > table
-            > tbody
-            > tr:nth-child(2)
-            > td:nth-child(2)
-            > a {
-            color: #b59567;
-        }
-
-        &
-            div.ant-modal-body
-            > div
-            > div:nth-child(1)
-            > div
-            > div
-            > table
-            > tbody
-            > tr:nth-child(1)
-            > td:nth-child(1)
-            > span {
-            color: #b59567;
         }
     }
 }
@@ -1326,9 +1262,10 @@ body
 
 @media (max-width: 576px) {
     .ant-modal-footer {
-        display: flex;
-        justify-content: flex-end;
+        display: grid;
+        justify-content: center;
         align-items: center;
+        grid-template-columns: 43% 43%;
     }
     .cwd-modal {
         & .ant-modal-content {

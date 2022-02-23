@@ -1,6 +1,11 @@
 .login-modal {
     max-width: 450px !important;
 
+    .ant-modal-footer {
+        display: flex;
+        justify-content: flex-end;
+    }
+
     &__footer {
         display: flex;
         align-items: center;

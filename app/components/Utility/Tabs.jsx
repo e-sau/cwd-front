@@ -128,6 +128,42 @@ class Tab extends React.Component {
                     </span>
                 );
                 break;
+
+            case "explorer.blocks.tab_title_01":
+                tabItem = (
+                    <span className="icon-tabs">
+                        <NewIcon
+                            iconWidth={45}
+                            iconHeight={45}
+                            iconName={"explorer_tab_explorer"}
+                        />
+                    </span>
+                );
+                break;
+
+            case "explorer.blocks.tab_title_02":
+                tabItem = (
+                    <span className="icon-tabs">
+                        <NewIcon
+                            iconWidth={34}
+                            iconHeight={44}
+                            iconName={"explorer_tab_op_history"}
+                        />
+                    </span>
+                );
+                break;
+
+            case "explorer.blocks.tab_title_03":
+                tabItem = (
+                    <span className="icon-tabs">
+                        <NewIcon
+                            iconWidth={41}
+                            iconHeight={41}
+                            iconName={"explorer_tab_last_blocks"}
+                        />
+                    </span>
+                );
+                break;
         }
 
         return (

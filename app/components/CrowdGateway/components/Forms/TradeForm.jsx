@@ -30,7 +30,7 @@ class TradeForm extends React.Component {
     }
 
     tradeTypeCheck(tradeTypeId) {
-        if (tradeTypeId === true) {
+        if (tradeTypeId) {
             document
                 .getElementById("tradeTypeBuy")
                 .classList.remove("trade-form__radio-btn--active");
@@ -38,10 +38,6 @@ class TradeForm extends React.Component {
             document
                 .getElementById("tradeTypeSell")
                 .classList.add("trade-form__radio-btn--active");
-
-            this.setState({
-                tradeType: true
-            });
         } else {
             document
                 .getElementById("tradeTypeSell")
@@ -49,10 +45,11 @@ class TradeForm extends React.Component {
             document
                 .getElementById("tradeTypeBuy")
                 .classList.add("trade-form__radio-btn--active");
-            this.setState({
-                tradeType: false
-            });
         }
+
+        this.setState({
+            tradeType: tradeTypeId
+        });
     }
 
     isWalletLocked(e) {
@@ -73,7 +70,6 @@ class TradeForm extends React.Component {
 
     addTradeItem() {
         let currentAccount = this.props.currentAccount;
-
         let tradeType = this.state.tradeType;
         let description = document.getElementById("tradeDescription").value;
         let tradeMin =

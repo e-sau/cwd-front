@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import Translate from "react-translate-component";
 import {Link} from "react-router-dom";
-import PartnersGame from "./components/PartnersGame";
+// import PartnersGame from "./components/PartnersGame";
 import AccountStore from "stores/AccountStore";
 import {ChainStore} from "bitsharesjs";
 import {connect} from "alt-react";
@@ -112,7 +112,7 @@ class GameZone extends React.Component {
                             </ul>
                         </div>
                     </section>
-
+{/* 
                     <section className="gamezone__block-wrap">
                         <Translate
                             className="gamezone__title"
@@ -128,7 +128,7 @@ class GameZone extends React.Component {
                                 />
                             ))}
                         </ul>
-                    </section>
+                    </section> */}
                 </div>
             </div>
         );
