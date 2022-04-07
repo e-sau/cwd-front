@@ -121,20 +121,31 @@ class MainUserData extends React.Component {
                         </span>
                     </div>
 
-                    {/* OP HISTORY */}
-                    <Link
-                        to={`/account/${accountName}`}
-                        className="cwd-btn__action-btn cwd-btn__action-btn--gold-border"
-                    >
-                        <Translate content="user_profile.op_history_btn" />
+                    {/* PORTFOLIO */}
 
-                        <NewIcon
-                            iconClass="main-user-data__btn-icon"
-                            iconWidth={width > 576 ? 12 : 9}
-                            iconHeight={width > 576 ? 11 : 7}
-                            iconName={"link_btn_arrow"}
-                        />
-                    </Link>
+                    <div className="main-user-data__btn-wrap">
+                        <Link
+                            to={`/account/${accountName}/portfolio`}
+                            className="cwd-btn__action-btn cwd-btn__action-btn--gold-border"
+                        >
+                            <Translate content="account.portfolio" />
+                        </Link>
+
+                        {/* OP HISTORY */}
+                        <Link
+                            to={`/account/${accountName}`}
+                            className="cwd-btn__action-btn cwd-btn__action-btn--gold-border"
+                        >
+                            <Translate content="user_profile.op_history_btn" />
+
+                            <NewIcon
+                                iconClass="main-user-data__btn-icon"
+                                iconWidth={width > 576 ? 12 : 9}
+                                iconHeight={width > 576 ? 11 : 7}
+                                iconName={"link_btn_arrow"}
+                            />
+                        </Link>
+                    </div>
                 </div>
 
                 {isrefModalVisisble ?

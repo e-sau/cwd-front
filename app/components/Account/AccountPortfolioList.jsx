@@ -17,7 +17,7 @@ import SettingsStore from "stores/SettingsStore";
 import MarketsStore from "stores/MarketsStore";
 import NewIcon from "../NewIcon/NewIcon";
 import utils from "common/utils";
-import SendModal from "../Modal/SendModal";
+import Transfer from "../Modal/Transfer";
 import SettingsActions from "actions/SettingsActions";
 import SettleModal from "../Modal/SettleModal";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
@@ -702,9 +702,9 @@ class AccountPortfolioList extends React.Component {
         return balances;
     }
 
-    _renderSendModal() {
+    _renderTransfer() {
         return (
-            <SendModal
+            <Transfer
                 id="send_modal_portfolio"
                 refCallback={e => {
                     if (e) this.send_modal = e;
@@ -766,7 +766,7 @@ class AccountPortfolioList extends React.Component {
                     label="utility.total_x_assets"
                     extraRow={this.props.extraRow}
                 >
-                    {this._renderSendModal()}
+                    {this._renderTransfer()}
                     {(this.state.isSettleModalVisible ||
                         this.state.isSettleModalVisibleBefore) &&
                         this._renderSettleModal()}

@@ -65,7 +65,7 @@
             "annual": "Hizmet hesabı"
         },
         "mine": "Hesabım",
-        "name": "Hesap adı",
+        "name": "hesap adı",
         "name_input": {
             "account_name_should": "Kullanıcı adınız ",
             "be_longer": "uzun olmalıdır",
@@ -1005,8 +1005,8 @@
             "trx_per_block": "İşlem/blok",
             "trx_per_sec": "İşlem/sn",
             "recent_ops": "Blok zincirindeki son operasyonlar",
-            "block_hash_title": "Blok Kimliğine veya txıd'ye göre ara",
-            "enter_hash": "karmayı girin",
+            "block_hash_title": "Blok kimliği, Tx kimliği veya hesap adı",
+            "enter_hash": "karma veya hesabı girin",
             "tab_title_01": "Blockchain",
             "tab_title_02": "Ortak operasyon geçmişi",
             "tab_title_03": "Son bloklar"
@@ -1816,7 +1816,7 @@
         "deposit_to": "Hesaba yatırıldı",
         "expiration": "Üyelik bitiş tarihi:",
         "feed_price": "Kotasyon ücreti",
-        "from": "kimden",
+        "from": "Kimden",
         "funding_account": "Finansman hesabı",
         "global_parameters_update": "Küresel parametreleri yeniledi",
         "inputs": "Girdiler",
@@ -1831,7 +1831,7 @@
         "seller": "satıcı",
         "sent": "gönderildi",
         "settlement_date": "Kapatma tarihi",
-        "to": "kime",
+        "to": "Kime",
         "transaction_confirmed": "İşlem onaylandı",
         "trxTypes": {
             "account_create": "Hesap oluşturma",
@@ -2486,7 +2486,8 @@
         },
         "footer": {
             "description": "karar verme ve kendi kendini yönetme için Wisdom of the Crowd fenomenini kullanan açık kaynaklı, merkezi olmayan bir CrowdWiz-blockchain tabanlı platformdur",
-            "link_news": "Haberler",
+            "white_paper": "White paper",
+            "audit": "Audit",
             "link_docs": "Docs",
             "link_dev": "Geliştiriciler"
         }

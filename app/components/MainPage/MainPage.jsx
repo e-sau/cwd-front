@@ -1,6 +1,6 @@
 import React from "react";
-import {connect} from "alt-react";
-import {ChainStore} from "bitsharesjs";
+import { connect } from "alt-react";
+import { ChainStore } from "bitsharesjs";
 import AltContainer from "alt-container";
 import AccountStore from "stores/AccountStore";
 import BlockchainStore from "stores/BlockchainStore";
@@ -33,11 +33,11 @@ class MainPage extends React.Component {
 
     getTotalData() {
         let host = window.location.hostname;
-        if(["127.0.0","192.168"].includes(host.substring(0, 7))) {
+        if (["127.0.0", "192.168"].includes(host.substring(0, 7))) {
             host = "backup.cwd.global"
         }
 
-        let url = "https://"+host+"/static/front-stats.json";
+        let url = "https://" + host + "/static/front-stats.json";
 
         fetch(url)
             .then(response => response.json())
@@ -131,7 +131,7 @@ export default MainPage = connect(MainPage, {
             return {
                 account: ChainStore.fetchFullAccount(
                     AccountStore.getState().currentAccount ||
-                        AccountStore.getState().passwordAccount
+                    AccountStore.getState().passwordAccount
                 )
             };
         }

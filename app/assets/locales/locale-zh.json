@@ -1005,8 +1005,8 @@
             "trx_per_block": "交易/模块",
             "trx_per_sec": "交易/秒",
             "recent_ops": "最近的区块链交易",
-            "block_hash_title": "按块ID或TxID搜索",
-            "enter_hash": "输入哈希值",
+            "block_hash_title": "块ID，Tx ID或帐户名称",
+            "enter_hash": "输入哈希或帐户",
             "tab_title_01": "区块链",
             "tab_title_02": "常见操作历史",
             "tab_title_03": "最后一个街区"
@@ -2486,7 +2486,8 @@
         },
         "footer": {
             "description": "是一个开放源代码的去中心化CrowdWiz区块链驱动的平台，该平台使用Crowd的现象进行决策和自治",
-            "link_news": "新闻",
+            "white_paper": "White paper",
+            "audit": "Audit",
             "link_docs": "Docs",
             "link_dev": "开发者"
         }

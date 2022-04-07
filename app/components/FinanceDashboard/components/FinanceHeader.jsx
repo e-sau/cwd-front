@@ -2,7 +2,7 @@ import React from "react";
 import Translate from "react-translate-component";
 import NewIcon from "../../NewIcon/NewIcon";
 import {Link} from "react-router-dom";
-import SendModal from "../../Modal/SendModal";
+import Transfer from "../../Modal/Transfer";
 import WalletDb from "stores/WalletDb";
 import WalletUnlockActions from "actions/WalletUnlockActions";
 import AccountActions from "actions/AccountActions";
@@ -115,7 +115,7 @@ class FinanceHeader extends React.Component {
                     </div>
                 </div>
 
-                <SendModal
+                <Transfer
                     id="send_modal_header"
                     refCallback={e => {
                         if (e) this.send_modal = e;

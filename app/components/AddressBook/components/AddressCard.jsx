@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import AccountLink from "../utility/AccountLink";
 import { linkData } from "../utility/LinkData";
-import SendModal from "../../Modal/SendModal";
+import Transfer from "../../Modal/Transfer";
 import SendMessage from "../../SendMessage/SendMessage";
 import WalletDb from "stores/WalletDb";
 import WalletUnlockActions from "actions/WalletUnlockActions";
@@ -97,7 +97,7 @@ class AddressCard extends React.Component {
     };
 
     // TRANSFER MODAL
-    showSendModal = e => {
+    showTransfer = e => {
         e.preventDefault();
 
         let isScam = false;
@@ -303,7 +303,7 @@ class AddressCard extends React.Component {
                             <button
                                 className="address-card__action-btn"
                                 type="button"
-                                onClick={this.showSendModal.bind(this)}
+                                onClick={this.showTransfer.bind(this)}
                             >
                                 <NewIcon
                                     iconWidth={21}
@@ -418,13 +418,14 @@ class AddressCard extends React.Component {
 
                     {/* TRANSFER MODAL */}
                     {currentAccount ?
-                        <SendModal
-                            id="AddresBookSendModal"
+                        <Transfer
+                            id="AddresBookTransfer"
                             refCallback={e => {
                                 if (e) this.send_modal = e;
                             }}
                             from_name={currentAccount.get("name")}
                             to_name={accountName}
+                            to_name_readonly={true}
                         />
                         : null
                     }

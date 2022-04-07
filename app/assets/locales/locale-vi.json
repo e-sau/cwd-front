@@ -65,7 +65,7 @@
             "annual": "Dịch vụ tài khoản"
         },
         "mine": "Tài khoản của tôi",
-        "name": "Tên tài khoản",
+        "name": "tên tài khoản",
         "name_input": {
             "account_name_should": "Tên tài khoản phải là ",
             "be_longer": "dài hơn",
@@ -1005,8 +1005,8 @@
             "trx_per_block": "Giao dịch/khối",
             "trx_per_sec": "Giao dịch/giây",
             "recent_ops": "Gần Đây Tìm Giao Dịch",
-            "block_hash_title": "Tìm kiếm bằng Khối ID hoặc TxID",
-            "enter_hash": "nhập băm",
+            "block_hash_title": "Block, Texas ID hoặc tên tài khoản",
+            "enter_hash": "nhập băm hoặc tài khoản",
             "tab_title_01": "Blockchain",
             "tab_title_02": "Hoạt động phổ biến lịch sử",
             "tab_title_03": "Cuối cùng khối"
@@ -1816,7 +1816,7 @@
         "deposit_to": "Đã gửi tiền vào tài khoản",
         "expiration": "Hết hạn",
         "feed_price": "Giá theo báo giá",
-        "from": "từ ai",
+        "from": "Từ ai",
         "funding_account": "Tài khoản cấp vốn",
         "global_parameters_update": "Cập nhật thông số toàn cầu",
         "inputs": "Đầu vào",
@@ -1831,7 +1831,7 @@
         "seller": "Người bán",
         "sent": "đã gửi",
         "settlement_date": "Ngày thanh toán",
-        "to": "cho",
+        "to": "Cho",
         "transaction_confirmed": "Đã xác nhận giao dịch",
         "trxTypes": {
             "account_create": "Tạo tài khoản",
@@ -2486,7 +2486,8 @@
         },
         "footer": {
             "description": "là một nền tảng dựa trên blockchain CrowdWiz phi tập trung mã nguồn mở sử dụng hiện tượng Trí tuệ Đám đông để ra quyết định và tự quản",
-            "link_news": "Tin tức",
+            "white_paper": "White paper",
+            "audit": "Audit",
             "link_docs": "Docs",
             "link_dev": "Nhà phát triển"
         }

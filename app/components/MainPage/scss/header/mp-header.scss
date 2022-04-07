@@ -127,6 +127,23 @@
             }
         }
     }
+
+    .block-hash__container {
+        margin-bottom: 30px;
+        padding: 18px 21px 18px 21px;
+        border-radius: 8px;
+        background-color: #202020;
+
+        .block-hash__inner {
+            grid-template-columns: 1fr 130px;
+        }
+
+        .explorer__subtitle {
+            display: block;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+    }
 }
 
 @media screen and (max-width: 1280px) {
@@ -150,6 +167,12 @@
             width: 245px;
             height: 60px;
             box-shadow: 5px 2px 60px 0 #101010;
+        }
+    }
+
+    .block-hash__container {
+        .block-hash__inner {
+            grid-template-columns: 320px 130px;
         }
     }
 }
@@ -192,6 +215,12 @@
 
             & span {
                 font-size: 13px;
+            }
+        }
+
+        .block-hash__container {
+            .block-hash__inner {
+                grid-template-columns: 100%;
             }
         }
     }

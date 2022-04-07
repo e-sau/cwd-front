@@ -59,6 +59,12 @@
         background-color: #1e1e1e;
     }
 
+    &__btn-wrap {
+        display: grid;
+        grid-template-columns: repeat(2, auto);
+        column-gap: 12px;
+    }
+
     &__btn-icon {
         margin-left: 10px;
     }
@@ -133,6 +139,10 @@
         &__text-wrap {
             margin-bottom: 7px;
         }
+
+        &__btn-wrap {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 }
 
@@ -163,6 +173,11 @@
             max-width: 171px;
             white-space: nowrap;
             overflow: hidden;
+        }
+
+        &__btn-wrap {
+            grid-template-columns: 100%;
+            row-gap: 12px;
         }
 
         &__modal {

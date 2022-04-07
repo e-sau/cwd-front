@@ -198,10 +198,17 @@ class UserProfile extends React.Component {
         } = this.state;
 
         if (Object.keys(currentAccount).length > 0) {
-            let currentAccountName = this.props.account.get("name");
-            let toAccount = this.props.match.params.account_name;
-            let notMyAccount = toAccount != currentAccountName;
-
+            let toAccount;
+            let notMyAccount;
+            if (this.props.account) {
+                let currentAccountName = this.props.account.get("name");
+                toAccount = this.props.match.params.account_name;
+                notMyAccount = toAccount != currentAccountName;
+            }
+            else {
+                toAccount = this.props.match.params.account_name;
+                notMyAccount = true;
+            }
             let currentAddressBook = JSON.parse(localStorage.getItem("__cwd__addressBook"));
             if (currentAddressBook === null) {
                 currentAddressBook = {};

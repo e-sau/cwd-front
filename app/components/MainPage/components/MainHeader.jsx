@@ -1,6 +1,6 @@
 import React from "react";
 import Translate from "react-translate-component";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import AltContainer from "alt-container";
 import WalletUnlockActions from "actions/WalletUnlockActions";
 import AccountActions from "actions/AccountActions";
@@ -8,6 +8,8 @@ import BlockchainStore from "stores/BlockchainStore";
 import LocaleSelector from "./utility/LocaleSelector";
 import HeaderDailyStats from "./HeaderDailyStats";
 import RegChartBlock from "./utility/RegChartBlock";
+import BlockHash from "./utility/BlockHash";
+
 
 // IMAGES
 import cwdLogo from "assets/svg-images/svg-common/main-page/header/cwd_logo.svg";
@@ -30,13 +32,13 @@ class MainHeader extends React.Component {
                     "/account/" + this.props.account.get("name")
                 );
             })
-            .catch(() => {});
+            .catch(() => { });
     }
 
     render() {
         let account = this.state.account;
         let containerWidth = window.innerWidth;
-        let {marketCapUsd, accountTotal, accountgraphData} = this.props;
+        let { marketCapUsd, accountTotal, accountgraphData } = this.props;
 
         return (
             <section className="mp-center-wrap mp-header__wrap">
@@ -111,6 +113,9 @@ class MainHeader extends React.Component {
                             accountTotal={accountTotal}
                             accountgraphData={accountgraphData}
                         />
+
+                        {/* HASH BLOCK */}
+                        <BlockHash />
 
                         {containerWidth > 1280 ? (
                             <div className="mp-header__auth-block">

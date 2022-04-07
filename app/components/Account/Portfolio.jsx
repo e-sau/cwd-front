@@ -341,118 +341,117 @@ class Portfolio extends React.Component {
         // add unicode non-breaking space as subtext to Activity Tab to ensure that all titles are aligned
         // horizontally
 
-        let currentAccount = this.props.currentAccount;
+        let account_name = this.props.account_name;
         let passAccount = AccountStore.getState().passwordAccount;
 
         return (
-            <div ref="appTables">
-                <div className="content-block small-12">
-                    <div className="tabs-container generic-bordered-box">
-                        <Tabs
-                            className="cwd-tabs"
-                            tabsClass="cwd-tabs__list"
-                            contentClass="cwd-tabs__content"
-                            segmented={false}
-                            actionButtons={false}
-                        >
-                            <Tab title="account.portfolio">
-                                <div className="header-selector">
-                                    <input
-                                        className="cwd-common__filter"
-                                        type="text"
-                                        placeholder={counterpart.translate(
-                                            "assets.portfolio.find_asset"
-                                        )}
-                                        onChange={this._handleFilterInput}
-                                    />
-                                </div>
+            <div className="tabs-container">
 
-                                {shownAssets != "visual" ? (
-                                    shownAssets === "hidden" &&
-                                        hiddenBalancesList.size ? (
-                                        hiddenPortfolioList
-                                    ) : (
-                                        includedPortfolioList
-                                    )
-                                ) : (
-                                    <AccountTreemap
-                                        balanceObjects={includedBalancesList}
-                                    />
+                <span className="cwd-common__title cwd-common__title--lower-case">{account_name}</span>
+
+                <Tabs
+                    className="cwd-tabs"
+                    tabsClass="cwd-tabs__list"
+                    contentClass="cwd-tabs__content"
+                    segmented={false}
+                    actionButtons={false}
+                >
+                    <Tab title="account.portfolio">
+                        <div className="header-selector">
+                            <input
+                                className="cwd-common__filter"
+                                type="text"
+                                placeholder={counterpart.translate(
+                                    "assets.portfolio.find_asset"
                                 )}
-                            </Tab>
+                                onChange={this._handleFilterInput}
+                            />
+                        </div>
 
-                            <Tab
-                                title="account.open_orders"
-                                subText={ordersValue}
+                        {shownAssets != "visual" ? (
+                            shownAssets === "hidden" &&
+                                hiddenBalancesList.size ? (
+                                hiddenPortfolioList
+                            ) : (
+                                includedPortfolioList
+                            )
+                        ) : (
+                            <AccountTreemap
+                                balanceObjects={includedBalancesList}
+                            />
+                        )}
+                    </Tab>
+
+                    <Tab
+                        title="account.open_orders"
+                        subText={ordersValue}
+                    >
+                        <AccountOrders {...this.props}>
+                            <div className="account-orders__total">
+                                <span className="account-orders__total-text">
+                                    {totalValueText}
+                                </span>
+                                <span className="account-orders__total-amount">
+                                    {ordersValue}
+                                </span>
+                                {this.props.isMyAccount ? (
+                                    <span />
+                                ) : null}
+                            </div>
+                        </AccountOrders>
+                    </Tab>
+
+                    {account.get("proposals") &&
+                        account.get("proposals").size ? (
+                        <Tab
+                            title="explorer.proposals.title"
+                            subText={String(
+                                account.get("proposals")
+                                    ? account.get("proposals").size
+                                    : 0
+                            )}
+                        >
+                            <div
+                                onClick={this._toggleHideProposal.bind(this)}
+                                className="proposals-switch__wrap"
                             >
-                                <AccountOrders {...this.props}>
-                                    <div className="account-orders__total">
-                                        <span className="account-orders__total-text">
-                                            {totalValueText}
-                                        </span>
-                                        <span className="account-orders__total-amount">
-                                            {ordersValue}
-                                        </span>
-                                        {this.props.isMyAccount ? (
-                                            <span />
-                                        ) : null}
-                                    </div>
-                                </AccountOrders>
-                            </Tab>
-
-                            {account.get("proposals") &&
-                                account.get("proposals").size ? (
-                                <Tab
-                                    title="explorer.proposals.title"
-                                    subText={String(
-                                        account.get("proposals")
-                                            ? account.get("proposals").size
-                                            : 0
-                                    )}
-                                >
-                                    <div
-                                        onClick={this._toggleHideProposal.bind(this)}
-                                        className="proposals-switch__wrap"
-                                    >
-                                        <Switch
-                                            className="proposals-switch__btn"
-                                            onChange={this.handleChange}
-                                            checked={this.state.hideFishingProposals}
-                                            offColor={"#6d6d6d"}
-                                            onColor={"#141414"}
-                                            onHandleColor={"#DEC27F"}
-                                            checkedIcon={false}
-                                            uncheckedIcon={false}
-                                            height={20}
-                                            width={36}
-                                            borderRadius={20}
-                                            checkedHandleIcon={
-                                                <NewIcon
-                                                    iconWidth={12}
-                                                    iconHeight={8}
-                                                    iconName={"checkmark"}
-                                                />
-                                            }
-                                            onChange={this._toggleHideProposal.bind(this)}
+                                <Switch
+                                    className="proposals-switch__btn"
+                                    onChange={this.handleChange}
+                                    checked={this.state.hideFishingProposals}
+                                    offColor={"#6d6d6d"}
+                                    onColor={"#141414"}
+                                    onHandleColor={"#DEC27F"}
+                                    checkedIcon={false}
+                                    uncheckedIcon={false}
+                                    height={20}
+                                    width={36}
+                                    borderRadius={20}
+                                    checkedHandleIcon={
+                                        <NewIcon
+                                            iconWidth={12}
+                                            iconHeight={8}
+                                            iconName={"checkmark"}
                                         />
-                                        
-                                        <Translate
-                                            className="proposals-switch__text"
-                                            content="account.deactivate_suspicious_proposals" />
-                                    </div>
+                                    }
+                                    onChange={this._toggleHideProposal.bind(this)}
+                                />
 
-                                    <Proposals
-                                        className="dashboard-table"
-                                        account={account}
-                                        hideFishingProposals={
-                                            this.state.hideFishingProposals
-                                        }
-                                    />
-                                </Tab>
-                            ) : null}
-                        </Tabs>
-                    </div>
-                </div>
+                                <Translate
+                                    className="proposals-switch__text"
+                                    content="account.deactivate_suspicious_proposals" />
+                            </div>
+
+                            <Proposals
+                                className="dashboard-table"
+                                account={account}
+                                hideFishingProposals={
+                                    this.state.hideFishingProposals
+                                }
+                            />
+                        </Tab>
+                    ) : null}
+                </Tabs>
             </div>
         );
     }

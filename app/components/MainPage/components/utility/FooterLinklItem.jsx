@@ -9,7 +9,7 @@ class FooterLinklItem extends React.Component {
         let linkData = this.props.linkData;
 
         return (
-            <li className="mp-footer__link-item">
+            <li className="mp-footer__link-item noselect">
                 <a href={linkData.url} rel="noopener noreferrer">
                     <Translate content={"main_page.footer." + linkData.text} />
                 </a>

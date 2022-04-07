@@ -4,7 +4,7 @@ import Translate from "react-translate-component";
 import { ChainStore } from "bitsharesjs";
 import AmountSelector from "../Utility/AmountSelector";
 import AccountStore from "stores/AccountStore";
-import AccountSelector from "../Account/AccountSelector";
+import TransferAccountSelector from "../Account/TransferAccountSelector";
 import TransactionConfirmStore from "stores/TransactionConfirmStore";
 import { Asset } from "common/MarketClasses";
 import { debounce, isNaN } from "lodash-es";
@@ -21,25 +21,10 @@ import { connect } from "alt-react";
 import { getWalletName } from "branding";
 import { Modal, Button, Tooltip } from "crowdwiz-ui-modal";
 
-const EqualWidthContainer = ({ children }) => (
-    <div
-        style={{
-            display: "flex",
-            justifyContent: "center"
-        }}
-    >
-        <div
-            style={{
-                display: "grid",
-                gridTemplateColumns: children.map(() => "1fr").join(" ")
-            }}
-        >
-            {children}
-        </div>
-    </div>
-);
+//STYLES
+import "./scss/transfer-modal.scss"
 
-class SendModal extends React.Component {
+class Transfer extends React.Component {
     constructor(props) {
         super(props);
         this.state = this.getInitialState(props);
@@ -433,7 +418,12 @@ class SendModal extends React.Component {
     }
 
     fromChanged(from_name) {
-        if (this.state.propose) this.setState({ from_name });
+        if (this.state.propose) {
+            this.setState({ from_name: "" });
+        }
+        else {
+            this.setState({ from_name: from_name });
+        }
     }
 
     onFromAccountChanged(from_account) {
@@ -468,23 +458,6 @@ class SendModal extends React.Component {
     }
 
     onMemoChanged(e) {
-        // let {asset_types} = this._getAvailableAssets();
-        // let {from_account, from_error, maxAmount} = this.state;
-        // if (
-        //     from_account &&
-        //     from_account.get("balances") &&
-        //     !from_error &&
-        //     maxAmount
-        // ) {
-        //     let account_balances = from_account.get("balances").toJS();
-        //     let current_asset_id = asset_types[0];
-        //     this._setTotal(
-        //         current_asset_id,
-        //         account_balances[current_asset_id]
-        //     );
-
-        // }
-
         this.setState({ memo: e.target.value }, this._updateFee);
     }
 
@@ -493,7 +466,6 @@ class SendModal extends React.Component {
             confirm_store_state.included &&
             confirm_store_state.broadcasted_transaction
         ) {
-            // this.setState(Transfer.getInitialState());
             TransactionConfirmStore.unlisten(this.onTrxIncluded);
             TransactionConfirmStore.reset();
         } else if (confirm_store_state.closed) {
@@ -502,12 +474,10 @@ class SendModal extends React.Component {
         }
     }
 
-    onPropose = () => {
+    onPropose() {
         let {
             propose,
             orig_account,
-            to_account,
-            to_name,
             from_account,
             from_name
         } = this.state;
@@ -534,8 +504,8 @@ class SendModal extends React.Component {
         });
     };
 
-    onProposeAccount(propose_account) {
-        this.setState({ propose_account });
+    onFromAccountChanged(from_account) {
+        this.setState({ from_account });
     }
 
     render() {
@@ -548,15 +518,21 @@ class SendModal extends React.Component {
             propose_account,
             feeAmount,
             amount,
-            error,
-            to_name,
-            from_name,
             memo,
             feeAsset,
             fee_asset_id,
             balanceError,
             hidden
         } = this.state;
+        let to_name_readonly = this.props.to_name_readonly;
+        let to_name = "";
+        let from_name = "";
+        if (to_account) {
+            to_name = to_account.get('name');
+        }
+        if (from_account) {
+            from_name = from_account.get('name');
+        }
         let from_my_account =
             AccountStore.isMyAccount(from_account) ||
             from_name === this.props.passwordAccount;
@@ -581,7 +557,7 @@ class SendModal extends React.Component {
                 balance = (
                     <span>
                         <Translate
-                            className="transfer__text"
+                            className="transfer-modal__text"
                             content="transfer.available"
                         />{" "}
                         <span
@@ -633,7 +609,7 @@ class SendModal extends React.Component {
             String.prototype.replace.call(amount, /,/g, "")
         );
         const isAmountValid = amountValue && !isNaN(amountValue);
-        
+
         let scamArray = [];
         let scamAccounts = ChainStore.fetchFullAccount("scam-accounts");
 
@@ -643,10 +619,9 @@ class SendModal extends React.Component {
             })
         }
 
-        
         const isSubmitNotValid =
-            !from_account ||
-            !to_account ||
+            !from_name ||
+            !to_name ||
             !isAmountValid ||
             !asset ||
             from_error ||
@@ -654,9 +629,6 @@ class SendModal extends React.Component {
             balanceError ||
             from_account.get("id") == to_account.get("id") ||
             scamArray.includes(to_account.get("id"));
-
-        let tabIndex = this.props.tabIndex; // Continue tabIndex on props count
-        let error_from_name = this.state.from_name;
 
         return !this.state.open ? null : (
             <div
@@ -681,11 +653,7 @@ class SendModal extends React.Component {
                         <Button
                             key={"send"}
                             disabled={isSubmitNotValid}
-                            onClick={
-                                !isSubmitNotValid
-                                    ? this.onSubmit.bind(this)
-                                    : null
-                            }
+                            onClick={this.onSubmit.bind(this)}
                             className="cwd-btn__rounded cwd-btn__rounded--confirm"
                         >
                             {propose
@@ -696,22 +664,22 @@ class SendModal extends React.Component {
                 >
                     <div>
                         <div className="content-block">
-                            <EqualWidthContainer>
+                            <div className="transfer-modal__btn-wrap">
                                 <Button
                                     type={propose ? "ghost" : "primary"}
-                                    onClick={this.onPropose}
+                                    onClick={this.onPropose.bind(this)}
                                 >
                                     <Translate content="transfer.send" />
                                 </Button>
                                 <Button
                                     type={propose ? "primary" : "ghost"}
-                                    onClick={this.onPropose}
+                                    onClick={this.onPropose.bind(this)}
                                 >
                                     <Translate content="propose" />
                                 </Button>
-                            </EqualWidthContainer>
+                            </div>
                         </div>
-                        <div className="transfer__header">
+                        <div className="transfer-modal__header">
                             <Translate
                                 content={
                                     propose
@@ -732,8 +700,8 @@ class SendModal extends React.Component {
                                                         "transfer.by"
                                                     )}
                                                 </label>
-                                                <AccountSelector
-                                                    label="transfer.by"
+                                                <TransferAccountSelector
+                                                    inputId="proposingAccountInput"
                                                     accountName={
                                                         this.props
                                                             .currentAccount
@@ -742,58 +710,76 @@ class SendModal extends React.Component {
                                                         this.props
                                                             .currentAccount
                                                     }
-                                                    size={60}
-                                                    hideImage
-                                                    tabIndex={0}
+                                                    onAccountChanged={this.onFromAccountChanged.bind(
+                                                        this
+                                                    )}
+                                                    readOnly={true}
                                                     showStatus={false}
                                                 />
                                             </div>
-                                            <div className="modal-separator" />
                                         </React.Fragment>
                                     )}
+
+                                    {/* FROM */}
                                     <div className="content-block">
                                         <label className="cwd-common__label">
                                             {counterpart.translate(
                                                 "transaction.from"
                                             )}
                                         </label>
-                                        <AccountSelector
-                                            label=""
-                                            accountName={from_name}
-                                            account={from_account}
-                                            onChange={this.fromChanged.bind(
-                                                this
-                                            )}
-                                            onAccountChanged={this.onFromAccountChanged.bind(
-                                                this
-                                            )}
-                                            size={60}
-                                            typeahead={propose || undefined}
-                                            hideImage
-                                            showStatus={false}
-                                        />
+
+                                        {propose ?
+                                            <React.Fragment>
+                                                <TransferAccountSelector
+                                                    inputId="fromProposeAccountInput"
+                                                    // accountName={from_name}
+                                                    account={from_account}
+                                                    onAccountChanged={this.onFromAccountChanged.bind(this)}
+                                                    readOnly={false}
+                                                    showStatus={true}
+                                                />
+                                            </React.Fragment>
+                                            :
+                                            <TransferAccountSelector
+                                                inputId="fromAccountInput"
+                                                accountName={from_name}
+                                                account={from_account}
+                                                onAccountChanged={this.onFromAccountChanged.bind(this)}
+                                                readOnly={true}
+                                                showStatus={false}
+                                            />
+                                        }
                                     </div>
+
+
                                     {/* T O */}
-                                    <div className="content-block cwd-send-modal__to-account-input-wrap">
+                                    <div className="content-block">
                                         <label className="cwd-common__label">
                                             {counterpart.translate(
                                                 "transaction.to"
                                             )}
                                         </label>
-                                        <AccountSelector
-                                            label="transfer.to"
-                                            accountName={to_name}
-                                            account={to_account}
-                                            onChange={this.toChanged.bind(this)}
-                                            onAccountChanged={this.onToAccountChanged.bind(
-                                                this
-                                            )}
-                                            size={60}
-                                            typeahead={false}
-                                            tabIndex={1}
-                                            hideImage
-                                            showStatus={true}
-                                        />
+                                        {to_name_readonly ?
+                                            <React.Fragment>
+                                                <TransferAccountSelector
+                                                    inputId="toAccountInput"
+                                                    accountName={to_name}
+                                                    account={to_account}
+                                                    onAccountChanged={this.onToAccountChanged.bind(this)}
+                                                    readOnly={true}
+                                                    showStatus={true}
+                                                />
+                                            </React.Fragment>
+                                            :
+                                            <TransferAccountSelector
+                                                inputId="toAccountInput"
+                                                account={to_account}
+                                                onAccountChanged={this.onToAccountChanged.bind(this)}
+                                                readOnly={false}
+                                                showStatus={true}
+                                            />
+                                        }
+
                                     </div>
 
                                     <div className="content-block transfer-input">
@@ -845,15 +831,6 @@ class SendModal extends React.Component {
                                                 this
                                             )}
                                         />
-                                        {/* warning */}
-                                        {this.state.propose ? (
-                                            <div className="transfer__warning-text">
-                                                <Translate
-                                                    content="transfer.warn_name_unable_read_memo"
-                                                    name={this.state.from_name}
-                                                />
-                                            </div>
-                                        ) : null}
                                     </div>
 
                                     <div className="content-block transfer-input">
@@ -908,13 +885,13 @@ class SendModal extends React.Component {
     }
 }
 
-class SendModalConnectWrapper extends React.Component {
+class TransferConnectWrapper extends React.Component {
     render() {
-        return <SendModal {...this.props} ref={this.props.refCallback} />;
+        return <Transfer {...this.props} ref={this.props.refCallback} />;
     }
 }
 
-SendModalConnectWrapper = connect(SendModalConnectWrapper, {
+TransferConnectWrapper = connect(TransferConnectWrapper, {
     listenTo() {
         return [AccountStore];
     },
@@ -927,4 +904,4 @@ SendModalConnectWrapper = connect(SendModalConnectWrapper, {
     }
 });
 
-export default SendModalConnectWrapper;
+export default TransferConnectWrapper;

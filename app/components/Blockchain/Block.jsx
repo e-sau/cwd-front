@@ -18,12 +18,39 @@ let ss = new ls("__graphene__");
 import "./scss/block-browser.scss";
 
 class TransactionList extends React.Component {
-    shouldComponentUpdate(nextProps) {
-        return nextProps.block.id !== this.props.block.id;
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showTrxAlert: false
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            nextProps.block.id !== this.props.block.id ||
+            nextState.showTrxAlert !== this.state.showTrxAlert
+        );
+    }
+
+    copyTrxHash() {
+        let apiUrl = ss.get("serviceApi");
+        let currentTrxHash = this.refs.currentTrxHash.innerText;
+        navigator.clipboard.writeText(apiUrl + "/hash/" + currentTrxHash);
+
+        // SHOW ALERT
+        this.setState({
+            showTrxAlert: true
+        });
+
+        this.timer = setTimeout(() => {
+            this.setState({ showTrxAlert: false });
+        }, 2000);
     }
 
     render() {
         let { block } = this.props;
+        let showTrxAlert = this.state.showTrxAlert;
         let transactions = null;
         transactions = [];
 
@@ -45,12 +72,21 @@ class TransactionList extends React.Component {
 
                         <div className="block-browser__info-row block-browser__info-row--tx-id">
                             <span className="block-browser__info-text">TxID: </span>
-                            <span className="block-browser__info-data">{id}</span>
+                            <span
+                                className="block-browser__info-data block-browser__info-data--tx-id"
+                                onClick={this.copyTrxHash.bind(this)}
+                                ref="currentTrxHash">
+                                {id}
+
+                                {showTrxAlert ?
+                                    <Translate
+                                        className="block-browser__alert"
+                                        content="address_book.contacs_list.link_copied" />
+                                    : null}
+                            </span>
                         </div>
                     </li>
                 );
-
-
             });
         }
 
@@ -185,7 +221,7 @@ class Block extends React.Component {
                                 <span
                                     className="block-browser__info-data block-browser__info-data--copy-hash" onClick={this.copyBlockHash.bind(this)}
                                     ref="currentBlockHash"
-                                    >
+                                >
                                     {block ? blockID : null}
                                 </span>
 

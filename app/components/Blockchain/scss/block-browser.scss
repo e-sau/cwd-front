@@ -16,6 +16,7 @@
         &--tx-id {
             margin-bottom: 0;
             margin-top: 15px;
+            cursor: pointer;
         }
 
         .cwd-common__link {
@@ -28,6 +29,10 @@
 
         &--copy-hash {
             cursor: pointer;
+        }
+
+        &--tx-id {
+            position: relative;
         }
     }
 
@@ -45,7 +50,7 @@
         display: grid;
         grid-template-columns: auto auto;
         justify-content: flex-start;
-        column-gap: 20px;
+        column-gap: 12px;
         margin-right: 50px;
     }
 

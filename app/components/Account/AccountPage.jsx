@@ -35,10 +35,11 @@ class AccountPage extends React.Component {
     };
 
     componentDidMount() {
+
         if (this.props.account) {
-            AccountActions.setCurrentAccount.defer(
-                this.props.account.get("name")
-            );
+            // AccountActions.setCurrentAccount.defer(
+            //     this.props.account.get("name")
+            // );
 
             // Fetch possible fee assets here to avoid async issues later (will resolve assets)
             accountUtils.getPossibleFees(this.props.account, "transfer");

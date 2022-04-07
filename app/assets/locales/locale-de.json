@@ -65,7 +65,7 @@
             "annual": "Dienstkonto"
         },
         "mine": "Mein Konto",
-        "name": "Kontoname",
+        "name": "kontoname",
         "name_input": {
             "account_name_should": "Der Kontoname muss ",
             "be_longer": "länger sein",
@@ -1004,8 +1004,8 @@
             "trx_per_block": "Transaktionen/Block",
             "trx_per_sec": "Transaktionen/Sek",
             "recent_ops": "Jüngste Operationen in der Blockchain",
-            "block_hash_title": "Suche nach Block-ID oder TxID",
-            "enter_hash": "geben Sie den Hash ein",
+            "block_hash_title": "Block-ID, Tx-ID oder Kontoname",
+            "enter_hash": "geben Sie den Hash oder das Konto ein",
             "tab_title_01": "Blockchain",
             "tab_title_02": "Gemeinsame Operationen Geschichte",
             "tab_title_03": "Letzte Blöcke"
@@ -1815,7 +1815,7 @@
         "deposit_to": "Auf Konto hinterlegt",
         "expiration": "Läuft ab",
         "feed_price": "Preis laut Kotierung",
-        "from": "von",
+        "from": "Von",
         "funding_account": "Finanzierungskonto",
         "global_parameters_update": "Globale Einstellungen aktualisiert",
         "inputs": "Eingänge",
@@ -1830,7 +1830,7 @@
         "seller": "Verkäufer",
         "sent": "gesendet",
         "settlement_date": "Begleichungsdatum",
-        "to": "an",
+        "to": "An",
         "transaction_confirmed": "Transaktion bestätigt",
         "trxTypes": {
             "account_create": "Konto erstellen",
@@ -2485,7 +2485,8 @@
         },
         "footer": {
             "description": "ist eine dezentrale Open-Source-Plattform mit CrowdWiz-Blockchain, die das Phänomen der Weisheit der Masse zur Entscheidungsfindung und Selbstverwaltung nutzt",
-            "link_news": "Nachrichten",
+            "white_paper": "White paper",
+            "audit": "Audit",
             "link_docs": "Docs",
             "link_dev": "Entwickler"
         }

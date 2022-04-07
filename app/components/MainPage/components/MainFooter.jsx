@@ -20,16 +20,20 @@ class MainFooter extends React.Component {
             ],
             linkItems: [
                 {
-                    text: "link_news",
-                    url: ""
-                },
-                {
                     text: "link_docs",
                     url: "https://github.com/crowdwiz-biz/docs"
                 },
                 {
                     text: "link_dev",
                     url: "https://github.com/crowdwiz-biz"
+                },
+                {
+                    text: "white_paper",
+                    url: "https://github.com/crowdwiz-biz/whitepaper"
+                },
+                {
+                    text: "audit",
+                    url: "https://github.com/crowdwiz-biz/amalgama-security-audits"
                 }
             ]
         };

@@ -212,7 +212,10 @@ let categories = {
         "staking_arrow"
     ],
     "crowd-market": ["cwd_casino"],
-    "social-icons": ["instagram_icon", "telegram_icon"],
+    "social-icons": [
+        "instagram_icon",
+        "telegram_icon"
+    ],
     settings: [
         "reset-icon",
         "node-active",

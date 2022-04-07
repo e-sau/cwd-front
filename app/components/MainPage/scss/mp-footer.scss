@@ -35,7 +35,7 @@
 
     &__social-list {
         display: grid;
-        grid-template-columns: 60px 60px;
+        grid-template-columns: repeat(2, 60px);
         gap: 20px;
         align-items: center;
         margin: 0 !important;
@@ -116,12 +116,27 @@
             height: 40px;
         }
 
+        &__link-container {
+            justify-content: center;
+        }
+
         &__link-item {
             padding-right: 22px;
             margin-right: 22px;
+            margin-bottom: 12px;
 
             & span {
                 font-size: 13px !important;
+            }
+
+            &:nth-child(3) {
+                padding-right: 0;
+                margin-right: 0;
+                border-right: none;
+            }
+
+            &:last-child {
+                margin-bottom: 0;
             }
         }
 

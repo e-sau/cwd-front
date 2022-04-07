@@ -88,10 +88,16 @@ class ExplorerBlocks extends React.Component {
             currentAccount = this.props.currentAccount.get("name")
         }
 
+        let processedBlockNum = formatBlockNum.replace(/ /g, '');
+
         return (
             <div className="explorer-blocks__wrap">
                 {/* CURRENT BLOCK */}
-                <div className="explorer-blocks__item explorer-blocks__item--current-block">
+
+                <Link
+                    className="explorer-blocks__item explorer-blocks__item--button explorer-blocks__item--current-block"
+                    to={`/block/${processedBlockNum}`}
+                >
                     <Translate className="explorer-blocks__title" content="explorer.blocks.current_block" />
 
                     <div className="explorer-blocks__data-container">
@@ -104,7 +110,7 @@ class ExplorerBlocks extends React.Component {
 
                         <span className="explorer-blocks__data explorer-blocks__data--large"># {formatBlockNum}</span>
                     </div>
-                </div>
+                </Link>
 
                 {/* LAST BLOCK */}
                 <div className="explorer-blocks__item explorer-blocks__item">

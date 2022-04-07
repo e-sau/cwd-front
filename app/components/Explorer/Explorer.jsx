@@ -133,6 +133,12 @@ class Explorer extends React.Component {
 
 
         let { blockHash } = this.state;
+
+        let href = "/hash/";
+        if (blockHash && blockHash.length < 40) {
+            href = "/profile/"; 
+        }
+
         const dynamicObject = this.props.getDynamicObject(
             coreAsset.get("dynamic_asset_data_id")
         );
@@ -331,7 +337,7 @@ class Explorer extends React.Component {
 
                                     <Link
                                         className="cwd-btn__action-btn noselect"
-                                        to={"/hash/" + blockHash}
+                                        to={href + blockHash}
                                     >
                                         <Translate content="explorer.block.go_to_btn" />
                                     </Link>

@@ -65,7 +65,7 @@
             "annual": "Service account"
         },
         "mine": "My account",
-        "name": "Account name",
+        "name": "account name",
         "name_input": {
             "account_name_should": "Account name must",
             "be_longer": "be longer",
@@ -1020,8 +1020,8 @@
             "trx_per_block": "Trx/block",
             "trx_per_sec": "Trx/s",
             "recent_ops": "Recent Blockchain transactions",
-            "block_hash_title": "Search by Block ID or TxID",
-            "enter_hash": "enter the hash",
+            "block_hash_title": "Search by Block ID, TxID or account name",
+            "enter_hash": "enter the hash or account",
             "tab_title_01": "Blockchain",
             "tab_title_02": "Common operations history",
             "tab_title_03": "Last blocks"
@@ -1852,7 +1852,7 @@
         "deposit_to": "Deposited to account",
         "expiration": "Expiration",
         "feed_price": "Feed price",
-        "from": "from",
+        "from": "From",
         "funding_account": "Funding account",
         "global_parameters_update": "Updated global parameters",
         "inputs": "Inputs",
@@ -1867,7 +1867,7 @@
         "seller": "Seller",
         "sent": "sent",
         "settlement_date": "Settlement date",
-        "to": "to",
+        "to": "To",
         "transaction_confirmed": "Transaction confirmed",
         "trxTypes": {
             "account_create": "Create account",
@@ -2570,7 +2570,8 @@
         },
         "footer": {
             "description": "is an open source decentralized CrowdWiz-blockchain driven platform that uses Wisdom of the Crowd phenomenon for decision making and self-governing",
-            "link_news": "News",
+            "white_paper": "White paper",
+            "audit": "Audit",
             "link_docs": "Docs",
             "link_dev": "Developers"
         }
