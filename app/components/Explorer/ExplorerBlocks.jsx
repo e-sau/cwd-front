@@ -196,7 +196,7 @@ class ExplorerBlocks extends React.Component {
                             iconName={"explorer_cwd_amount"}
                         />
 
-                        <span className="explorer-blocks__data">{currentSupply}</span>
+                        <span className="explorer-blocks__data explorer-blocks__data--current-supply">{currentSupply}</span>
                     </div>
                 </div>
 

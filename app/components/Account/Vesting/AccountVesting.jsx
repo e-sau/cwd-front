@@ -2,12 +2,9 @@ import React from "react";
 import Translate from "react-translate-component";
 import { Apis } from "bitsharesjs-ws";
 import AccountActions from "actions/AccountActions";
-import AccountCredit from "../AccountCredit";
-import NewIcon from "../../NewIcon/NewIcon";
 import VestingTypes from "./components/VestingTypes";
 import TranslateWithLinks from "../../Utility/TranslateWithLinks";
-import { Tabs, Tab } from "../../Utility/Tabs";
-import VestingTransfer from "./components/VestingTransfer";
+
 
 require("./scss/vesting.scss");
 
@@ -117,64 +114,35 @@ class AccountVesting extends React.Component {
                     content="account.vesting.vesting_title"
                 />
 
-                <Tabs
-                    className="cwd-tabs"
-                    tabsClass="cwd-tabs__list"
-                    contentClass="cwd-tabs__content"
-                    segmented={false}
-                    actionButtons={false}
-                    defaultActiveTab={activeTab ? activeTab : 0}
-                >
-                    <Tab title="account.vesting.vesting_subtitle">
-                        {/*Vesting items*/}
-                        <div className="contract__vesting-wrap">
-                            {!vbs.length || total_vesting_amount == 0 ? (
-                                <p className="contract__info-text">
-                                    <TranslateWithLinks
-                                        string="account.vesting.no_balances"
-                                        keys={[
-                                            {
-                                                type: "account",
-                                                value: account_name,
-                                                arg: "account"
-                                            }
-                                        ]}
-                                    />
-                                </p>
-                            ) : (
-                                <div>
-                                    <div className="vesting__container">
-                                        <VestingTypes
-                                            account={this.props.account}
-                                            vestingObj={vbs}
-                                            retrieveVestingBalances={this.retrieveVestingBalances.bind(
-                                                this
-                                            )}
-                                        />
-                                    </div>
-                                </div>
-                            )}
+                {/*Vesting items*/}
+                <div className="contract__vesting-wrap">
+                    {!vbs.length || total_vesting_amount == 0 ? (
+                        <p className="contract__info-text">
+                            <TranslateWithLinks
+                                string="account.vesting.no_balances"
+                                keys={[
+                                    {
+                                        type: "account",
+                                        value: account_name,
+                                        arg: "account"
+                                    }
+                                ]}
+                            />
+                        </p>
+                    ) : (
+                        <div>
+                            <div className="vesting__container">
+                                <VestingTypes
+                                    account={this.props.account}
+                                    vestingObj={vbs}
+                                    retrieveVestingBalances={this.retrieveVestingBalances.bind(
+                                        this
+                                    )}
+                                />
+                            </div>
                         </div>
-                    </Tab>
-
-                    <Tab title="account.vesting.tab_silver">
-                        <VestingTransfer
-                            key={this.props.account.get("id")}
-                            currentAccount={this.props.account}
-                            toName="infinity-withdraw"
-                            minDeposit={silverBalance}
-                            transferAsset="1.3.4"
-                        />
-                    </Tab>
-
-                    <Tab title="account.vesting.tab_credit">
-                        <AccountCredit
-                            key={this.props.account.get("id")}
-                            history={this.props.history}
-                            account={this.props.account}
-                        />
-                    </Tab>
-                </Tabs>
+                    )}
+                </div>
             </div>
         );
     }
